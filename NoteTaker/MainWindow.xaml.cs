@@ -52,7 +52,7 @@ namespace NoteTaker
                 note.vm.Id = noteCard.Id;
                 note.vm.NoteString.Clear();
                 note.vm.NoteString.Append(noteCard.Note);
-                note.vm.UpdatedTime = DateTime.ParseExact(noteCard.UpdatedTime, "MM/dd/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
+                note.vm.UpdatedTime = DateTime.ParseExact(noteCard.UpdatedTime, "MM/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                 note.Padding = new Thickness(0, 0, 0, 7);
                 note.MouseDoubleClick += HandleNoteCardMouseDoubleClick;
                 Content.Children.Add(note);
