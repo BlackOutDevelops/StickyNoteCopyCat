@@ -143,19 +143,19 @@
         </Style>
         <SolidColorBrush x:Key="ScrollBar.Static.Background" Color="Transparent"/>
         <SolidColorBrush x:Key="ScrollBar.Static.Border" Color="Transparent"/>
-        <SolidColorBrush x:Key="ScrollBar.Static.Glyph" Color="#606060"/>
-        <SolidColorBrush x:Key="ScrollBar.Static.Thumb" Color="#CDCDCD"/>
+        <SolidColorBrush x:Key="ScrollBar.Static.Glyph" Color="White"/>
+        <SolidColorBrush x:Key="ScrollBar.Static.Thumb" Color="#FF444444"/>
         <SolidColorBrush x:Key="ScrollBar.MouseOver.Background" Color="Gray"/>
         <SolidColorBrush x:Key="ScrollBar.MouseOver.Border" Color="Gray"/>
-        <SolidColorBrush x:Key="ScrollBar.MouseOver.Glyph" Color="#000000"/>
+        <SolidColorBrush x:Key="ScrollBar.MouseOver.Glyph" Color="White"/>
         <SolidColorBrush x:Key="ScrollBar.MouseOver.Thumb" Color="#A6A6A6"/>
         <SolidColorBrush x:Key="ScrollBar.Pressed.Background" Color="LightGray"/>
         <SolidColorBrush x:Key="ScrollBar.Pressed.Border" Color="LightGray"/>
-        <SolidColorBrush x:Key="ScrollBar.Pressed.Thumb" Color="#606060"/>
-        <SolidColorBrush x:Key="ScrollBar.Pressed.Glyph" Color="#FFFFFF"/>
+        <SolidColorBrush x:Key="ScrollBar.Pressed.Thumb" Color="White"/>
+        <SolidColorBrush x:Key="ScrollBar.Pressed.Glyph" Color="White"/>
         <SolidColorBrush x:Key="ScrollBar.Disabled.Background" Color="Transparent"/>
         <SolidColorBrush x:Key="ScrollBar.Disabled.Border" Color="Transparent"/>
-        <SolidColorBrush x:Key="ScrollBar.Disabled.Glyph" Color="#BFBFBF"/>
+        <SolidColorBrush x:Key="ScrollBar.Disabled.Glyph" Color="White"/>
         <Style x:Key="RepeatButtonTransparent" TargetType="{x:Type RepeatButton}">
             <Setter Property="OverridesDefaultStyle" Value="true"/>
             <Setter Property="Background" Value="Transparent"/>
@@ -169,7 +169,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        <Style x:Key="ScrollBarButton" TargetType="{x:Type RepeatButton}">
+        <Style x:Key="ScrollBarButtonTop" TargetType="{x:Type RepeatButton}">
             <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
@@ -181,6 +181,39 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type RepeatButton}">
                         <Border x:Name="border" Background="{StaticResource ScrollBar.Static.Background}" BorderBrush="{StaticResource ScrollBar.Static.Border}" BorderThickness="1" SnapsToDevicePixels="true">
+                            <ContentPresenter x:Name="contentPresenter" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter Property="Background" TargetName="border" Value="{StaticResource ScrollBar.MouseOver.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource ScrollBar.MouseOver.Border}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="true">
+                                <Setter Property="Background" TargetName="border" Value="{StaticResource ScrollBar.Pressed.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource ScrollBar.Pressed.Border}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Opacity" TargetName="contentPresenter" Value="0.56"/>
+                                <Setter Property="Background" TargetName="border" Value="{StaticResource ScrollBar.Disabled.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource ScrollBar.Disabled.Border}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="ScrollBarButtonBottom" TargetType="{x:Type RepeatButton}">
+            <Setter Property="FocusVisualStyle" Value="{StaticResource FocusVisual}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="1"/>
+            <Setter Property="Focusable" Value="false"/>
+            <Setter Property="IsTabStop" Value="false"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type RepeatButton}">
+                        <Border x:Name="border" Background="{StaticResource ScrollBar.Static.Background}" BorderBrush="{StaticResource ScrollBar.Static.Border}" BorderThickness="1" SnapsToDevicePixels="true" CornerRadius="0, 0, 7, 0">
                             <ContentPresenter x:Name="contentPresenter" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
                         </Border>
                         <ControlTemplate.Triggers>
@@ -254,15 +287,19 @@
                     <ControlTemplate TargetType="{x:Type ScrollBar}">
                         <Grid x:Name="Bg" SnapsToDevicePixels="true">
                             <Grid.RowDefinitions>
-                                <RowDefinition MaxHeight="{DynamicResource {x:Static SystemParameters.VerticalScrollBarButtonHeightKey}}"/>
+                                <!-- Change Row 0 and Row 2 to 0 to get rid of arrow buttons -->
+                                <!--<RowDefinition MaxHeight="{DynamicResource {x:Static SystemParameters.VerticalScrollBarButtonHeightKey}}"/>-->
+                                <RowDefinition MaxHeight="{Binding ScrollBarArrowButtonHeight}"/>
                                 <RowDefinition Height="0.00001*"/>
-                                <RowDefinition MaxHeight="{DynamicResource {x:Static SystemParameters.VerticalScrollBarButtonHeightKey}}"/>
+                                <!--<RowDefinition MaxHeight="{DynamicResource {x:Static SystemParameters.VerticalScrollBarButtonHeightKey}}"/>-->
+                                <RowDefinition MaxHeight="{Binding ScrollBarArrowButtonHeight}"/>
                             </Grid.RowDefinitions>
                             <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Grid.Row="1"/>
-                            <RepeatButton x:Name="PART_LineUpButton" Command="{x:Static ScrollBar.LineUpCommand}" IsEnabled="{TemplateBinding IsMouseOver}" Style="{StaticResource ScrollBarButton}">
+                            <RepeatButton x:Name="PART_LineUpButton" Command="{x:Static ScrollBar.LineUpCommand}" IsEnabled="{TemplateBinding IsMouseOver}" Style="{StaticResource ScrollBarButtonTop}">
                                 <Path x:Name="ArrowTop" Data="M 0,4 C0,4 0,6 0,6 0,6 3.5,2.5 3.5,2.5 3.5,2.5 7,6 7,6 7,6 7,4 7,4 7,4 3.5,0.5 3.5,0.5 3.5,0.5 0,4 0,4 z" Fill="{StaticResource ScrollBar.Static.Glyph}" Margin="3,4,3,3" Stretch="Uniform"/>
                             </RepeatButton>
-                            <Track x:Name="PART_Track" IsDirectionReversed="true" IsEnabled="{TemplateBinding IsMouseOver}" Grid.Row="1">
+                            <!-- Changed Width and Margin to match sticky note-->
+                            <Track x:Name="PART_Track" IsDirectionReversed="true" IsEnabled="{TemplateBinding IsMouseOver}" Grid.Row="1" Width="{Binding TrackWidth}" Margin="{Binding TrackMargin}">
                                 <Track.DecreaseRepeatButton>
                                     <RepeatButton Command="{x:Static ScrollBar.PageUpCommand}" Style="{StaticResource RepeatButtonTransparent}"/>
                                 </Track.DecreaseRepeatButton>
@@ -273,7 +310,7 @@
                                     <Thumb Style="{StaticResource ScrollBarThumbVertical}"/>
                                 </Track.Thumb>
                             </Track>
-                            <RepeatButton x:Name="PART_LineDownButton" Command="{x:Static ScrollBar.LineDownCommand}" IsEnabled="{TemplateBinding IsMouseOver}" Grid.Row="2" Style="{StaticResource ScrollBarButton}">
+                            <RepeatButton x:Name="PART_LineDownButton" Command="{x:Static ScrollBar.LineDownCommand}" IsEnabled="{TemplateBinding IsMouseOver}" Grid.Row="2" Style="{StaticResource ScrollBarButtonBottom}">
                                 <Path x:Name="ArrowBottom" Data="M 0,2.5 C0,2.5 0,0.5 0,0.5 0,0.5 3.5,4 3.5,4 3.5,4 7,0.5 7,0.5 7,0.5 7,2.5 7,2.5 7,2.5 3.5,6 3.5,6 3.5,6 0,2.5 0,2.5 z" Fill="{StaticResource ScrollBar.Static.Glyph}" Margin="3,4,3,3" Stretch="Uniform"/>
                             </RepeatButton>
                         </Grid>
@@ -404,7 +441,8 @@
                             </Grid.RowDefinitions>
                             <Rectangle x:Name="Corner" Grid.Column="1" Fill="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Grid.Row="1"/>
                             <ScrollContentPresenter x:Name="PART_ScrollContentPresenter" CanHorizontallyScroll="False" ContentTemplate="{TemplateBinding ContentTemplate}" CanVerticallyScroll="False" Grid.Column="0" Content="{TemplateBinding Content}" CanContentScroll="{TemplateBinding CanContentScroll}" Margin="{TemplateBinding Padding}" Grid.Row="0"/>
-                            <ScrollBar Style="{DynamicResource ScrollBarStyle}" x:Name="PART_VerticalScrollBar" AutomationProperties.AutomationId="VerticalScrollBar" Cursor="Arrow" Grid.Column="1" Maximum="{TemplateBinding ScrollableHeight}" Minimum="0" Grid.Row="0" Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" ViewportSize="{TemplateBinding ViewportHeight}" Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}" Background="Transparent" Foreground="Gray" BorderThickness="0"/>
+                            <ScrollBar Style="{DynamicResource ScrollBarStyle}" x:Name="PART_VerticalScrollBar" AutomationProperties.AutomationId="VerticalScrollBar" Cursor="Arrow" Grid.Column="1" Maximum="{TemplateBinding ScrollableHeight}" Minimum="0" Grid.Row="0" Value="{Binding VerticalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" 
+                                       ViewportSize="{TemplateBinding ViewportHeight}" Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}" Background="Transparent" Foreground="Gray" BorderThickness="0" MouseEnter="HandleMouseEnterScrollBar" MouseLeave="HandleMouseLeaveScrollBar"/>
                             <ScrollBar x:Name="PART_HorizontalScrollBar" AutomationProperties.AutomationId="HorizontalScrollBar" Cursor="Arrow" Grid.Column="0" Maximum="{TemplateBinding ScrollableWidth}" Minimum="0" Orientation="Horizontal" Grid.Row="1" Value="{Binding HorizontalOffset, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" ViewportSize="{TemplateBinding ViewportWidth}" Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"/>
                         </Grid>
                     </ControlTemplate>
@@ -468,7 +506,8 @@
             </DockPanel>
             
             <!-- Contents -->
-            <StackPanel Grid.Row="1" Margin="5, 0, 10, 0">
+            <ScrollViewer x:Name="ContentScrollViewer" Style="{DynamicResource ScrollViewerStyle}" Grid.Row="2" Margin="{Binding ScrollViewerMargin}">
+                <StackPanel Grid.Row="1" Margin="{Binding StackPanelMargin}">
                 <Label Content="Note Taker" FontSize="19" FontWeight="Bold" Foreground="White" Margin="0, -4, 0, 5" />
                 <DockPanel Height="32">
                     <Grid>
