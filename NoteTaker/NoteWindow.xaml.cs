@@ -55,6 +55,7 @@ namespace NoteTaker
 
         #region EventHandlers
         #region Window EventHandlers
+        // Crashes on surface pro when dragging with "System.ComponentModel.Win32Exception: 'The parameter is incorrect'"
         private void HandleMouseDownRow(object sender, MouseButtonEventArgs e)
         {
             var windowBar = sender as Border;
@@ -68,7 +69,7 @@ namespace NoteTaker
                 Left = mousePosition.X - windowBar.ActualWidth / 2;
                 Top = mousePosition.Y - windowBar.ActualHeight / 2;
                 DragMove();
-            }
+            } // Crashes right on DragMove(); Line 74 Maybe dragging with touchpad?
             else if (e.ChangedButton == MouseButton.Left)
                 DragMove();
         }
