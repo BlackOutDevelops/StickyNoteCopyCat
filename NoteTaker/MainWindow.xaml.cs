@@ -50,6 +50,8 @@ namespace NoteTaker
         // ORGANIZE BY TIME
         private void DisplayAllNotesFromDatabase(List<NoteCardModel> allNotes)
         {
+            // Descending order - Flip to have ascending order (x.UpdatedTime.CompareTo(y.UpdatedTime))
+            AllNotes.Sort((x, y) => y.UpdatedTime.CompareTo(x.UpdatedTime));
             foreach (NoteCardModel noteCard in allNotes)
             {
                 NoteCard note = new NoteCard();
