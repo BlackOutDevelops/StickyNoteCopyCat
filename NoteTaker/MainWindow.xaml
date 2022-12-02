@@ -532,8 +532,6 @@
 
             </StackPanel>
                     </DockPanel>
-                <StackPanel Name="Content" CanVerticallyScroll="True">
-
                 </StackPanel>
             </ScrollViewer>
         </Grid>
