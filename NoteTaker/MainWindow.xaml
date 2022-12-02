@@ -461,7 +461,6 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="40"/>
                 <RowDefinition/>
-                <RowDefinition />
             </Grid.RowDefinitions>
 
             <Grid Grid.RowSpan="3">
