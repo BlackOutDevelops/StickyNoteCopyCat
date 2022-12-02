@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NoteTaker.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -530,6 +531,27 @@ namespace NoteTaker
                 searchBox.Text = string.Empty;
         }
         #endregion
+
+        // Maybe add animation later
+        private void HandleMouseEnterScrollBar(object sender, MouseEventArgs e)
+        {
+            var scrollBar = sender as ScrollBar;
+
+            mwvm.StackPanelMargin = new Thickness(0, 0, -5, 0);
+            mwvm.ScrollViewerMargin = new Thickness(10, 0, 0, 0);
+            mwvm.ScrollBarArrowButtonHeight = (int)SystemParameters.VerticalScrollBarButtonHeight;
+            mwvm.TrackWidth = (int)SystemParameters.VerticalScrollBarWidth;
+            mwvm.TrackMargin = new Thickness(0);
+        }
+
+        private void HandleMouseLeaveScrollBar(object sender, MouseEventArgs e)
+        {
+            mwvm.StackPanelMargin = new Thickness(0);
+            mwvm.ScrollViewerMargin = new Thickness(10, 0, -5, 0);
+            mwvm.ScrollBarArrowButtonHeight = 0;
+            mwvm.TrackWidth = 2;
+            mwvm.TrackMargin = new Thickness(0, 14, 0, 14);
+        }
         #endregion
     }
 }
