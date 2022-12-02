@@ -516,7 +516,7 @@
                             <ColumnDefinition Width="32"/>
                         </Grid.ColumnDefinitions>
                         <TextBox x:Name="SearchBox" Grid.Column="0" LostFocus="HandleTextBoxLostFocus" PreviewMouseDown="SetCursorToBeginningHandler" Text="Search..." VerticalContentAlignment="Center" Padding="5, 0" HorizontalAlignment="Stretch" 
-                                 FontSize="14" BorderThickness="0" Background="{StaticResource AccentColor}" Margin="5, 0, 0, 0" PreviewTextInput="TextInputHandler" PreviewKeyDown="TextDeleteAndSpaceHandler" Foreground="DarkGray"
+                                     FontSize="14" BorderThickness="0" Background="{StaticResource AccentColor}" PreviewTextInput="TextInputHandler" PreviewKeyDown="TextDeleteAndSpaceHandler" Foreground="DarkGray"
                                  PreviewKeyUp="TextDeleteAndSpaceHandler" GotFocus="HandleTextBoxGotFocus" TextWrapping="Wrap" />
                         <Button x:Name="DeleteTextButton" Template="{DynamicResource SearchBarButtonTemplate}" Grid.Column="1" BorderThickness="0" Foreground="WhiteSmoke" Background="{StaticResource AccentColor}" Width="32" Content="×" FontWeight="ExtraLight" FontSize="28" Padding="-5" DockPanel.Dock="Right" VerticalContentAlignment="Top" HorizontalAlignment="Right" Visibility="Hidden" Click="HandleDeleteButtonClicked"/>
                         <Button Template="{DynamicResource SearchBarButtonTemplate}" Grid.Column="2" BorderThickness="0" Foreground="WhiteSmoke" Background="{StaticResource AccentColor}" Width="32" FontSize="15" DockPanel.Dock="Right" HorizontalAlignment="Right">
