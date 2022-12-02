@@ -33,10 +33,13 @@ namespace NoteTaker
                        LeftLocation;
         private List<NoteCardModel> AllNotes;
 
+        private MainWindowViewModel mwvm = new MainWindowViewModel();
+
         private Dictionary<int, NoteWindow> ListOfNoteWindows = new Dictionary<int, NoteWindow>();
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = mwvm;
             HandleWindowStateChanged(this, EventArgs.Empty);
             AllNotes = SQLiteDatabaseAccess.LoadNotes();
             DisplayAllNotesFromDatabase(AllNotes);
