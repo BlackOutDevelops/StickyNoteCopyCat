@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -31,6 +32,20 @@ namespace NoteTaker
             InitializeComponent();
             DataContext = vm;
             vm.UpdatedTime = DateTime.Now;
+            vm.PropertyChanged += (e, v) => DisplayUpdatedTimeCorrectly();
+        }
+
+        private void DisplayUpdatedTimeCorrectly()
+        {
+            if (vm.UpdatedTime.Date == DateTime.Now.Date)
+                NoteLastUpdated.Content = vm.UpdatedTime.ToShortTimeString();
+            else if (vm.UpdatedTime.Date.Year != DateTime.Now.Date.Year)
+                NoteLastUpdated.Content = vm.UpdatedTime.ToShortDateString();
+            else
+            {
+                string monthAndDay = vm.UpdatedTime.GetDateTimeFormats('M')[0];
+                NoteLastUpdated.Content = monthAndDay.Substring(0, 3) + " " + monthAndDay.Split()[1];
+            }
         }
 
         private void HandleMouseEntered(object sender, MouseEventArgs e)

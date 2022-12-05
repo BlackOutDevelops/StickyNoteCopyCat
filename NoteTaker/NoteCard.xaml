@@ -72,7 +72,7 @@
         <Border Height="3" Background="#FF414141" VerticalAlignment="Top" CornerRadius="2, 2, 0, 0"/>
         <Canvas>
             <Button Style="{DynamicResource NoteSettingsButton}" Name="NoteSettings" Content="..." Background="Transparent" BorderThickness="0" Foreground="DarkGray" VerticalContentAlignment="Center" FontFamily="BC Sklonar" FontSize="10" Canvas.Top="10" Canvas.Right="10" Visibility="Hidden" MouseEnter="HandleMouseEntered"/>
-            <Label Name="NoteLastUpdated" Content="{Binding UpdatedTime}" FontSize="10" Canvas.Right="5" Canvas.Top="5" Foreground="DarkGray"/>
+            <Label Name="NoteLastUpdated" FontSize="10" Canvas.Right="5" Canvas.Top="5" Foreground="DarkGray"/>
             <!-- When Open Make Both Visible !-->
             <Polygon x:Name="BentRectangleTop" Points="0,15 15,0 0,0" Fill="#FF414141" Canvas.Bottom="-1" Canvas.Right="0" Visibility="Hidden"/>
             <Polygon x:Name="BentRectangleBottom" Points="0,15 15,0 15,15" Fill="#FF262626" Canvas.Bottom="-1" Canvas.Right="0" Visibility="Hidden"/>
