@@ -446,26 +446,29 @@ namespace NoteTaker
             //    noteTextBox.Foreground = Brushes.Gray;
             //}
 
-            // Update UI
-            NoteCardVM.NoteString.Clear();
-            NoteCardVM.NoteString.Append(noteTextBox.Text);
-            NoteCardVM.FirePropertyChanged(nameof(NoteCardVM.NoteString));
-            NoteCardVM.UpdatedTime = DateTime.Now;
-
-            // Update model to send to database
-            NoteCardM.Note = NoteCardVM.NoteString.ToString();
-            NoteCardM.UpdatedTime = NoteCardVM.UpdatedTime.ToString();
-
-            if (!IsInDatabase)
+            if (NoteCardVM.NoteString.ToString() != noteTextBox.Text)
             {
-                SQLiteDatabaseAccess.SaveNewNote(NoteCardM);
-                NoteCardVM.Id = NoteCardM.Id = SQLiteDatabaseAccess.LoadRecentNoteDatabaseID();
-                IsInDatabase = true;
-            }
-            else
-            {
-                NoteCardM.Id = NoteCardVM.Id;
-                SQLiteDatabaseAccess.SaveCurrentNote(NoteCardM);
+                // Update UI
+                NoteCardVM.NoteString.Clear();
+                NoteCardVM.NoteString.Append(noteTextBox.Text);
+                NoteCardVM.FirePropertyChanged(nameof(NoteCardVM.NoteString));
+                NoteCardVM.UpdatedTime = DateTime.Now;
+
+                // Update model to send to database
+                NoteCardM.Note = NoteCardVM.NoteString.ToString();
+                NoteCardM.UpdatedTime = NoteCardVM.UpdatedTime.ToString();
+
+                if (!IsInDatabase)
+                {
+                    SQLiteDatabaseAccess.SaveNewNote(NoteCardM);
+                    NoteCardVM.Id = NoteCardM.Id = SQLiteDatabaseAccess.LoadRecentNoteDatabaseID();
+                    IsInDatabase = true;
+                }
+                else
+                {
+                    NoteCardM.Id = NoteCardVM.Id;
+                    SQLiteDatabaseAccess.SaveCurrentNote(NoteCardM);
+                }
             }
         }
 
