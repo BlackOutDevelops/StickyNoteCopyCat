@@ -184,19 +184,19 @@ namespace NoteTaker
         private void HandleNoteCardMouseDoubleClick(object sender, RoutedEventArgs e)
         {
             var noteCard = sender as NoteCard;
-            NoteWindow existingNote = new NoteWindow(noteCard, true);
-            NoteWindow openNoteWindow;
+            NoteWindow existingNote;
             noteCard.BentRectangleTop.Visibility = Visibility.Visible;
             noteCard.BentRectangleBottom.Visibility = Visibility.Visible;
             
             // Fix this to focus textbox each time window is focused
-            if (noteCard.IsOpen && ListOfNoteWindows.TryGetValue(noteCard.vm.Id, out openNoteWindow))
+            if (noteCard.IsOpen && ListOfNoteWindows.TryGetValue(noteCard.vm.Id, out existingNote))
             {
-                openNoteWindow.Focus();
-                FocusManager.SetFocusedElement(openNoteWindow.Griddy, openNoteWindow.NoteTextBox);
+                existingNote.Focus();
+                FocusManager.SetFocusedElement(existingNote.Griddy, existingNote.NoteTextBox);
             }
             else
             {
+                existingNote = new NoteWindow(noteCard, true);
                 existingNote.Show();
 
                 noteCard.IsOpen = true;
