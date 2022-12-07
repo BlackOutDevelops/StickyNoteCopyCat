@@ -184,7 +184,7 @@
             </DockPanel>
 
             <!-- Contents -->
-            <TextBox x:Name="NoteTextBox" Grid.Row="1" Background="#FF303030" BorderThickness="0" Padding="10" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible" FontSize="14" TextChanged="HandleTextChanged" />
+            <TextBox x:Name="NoteTextBox" Grid.Row="1" Foreground="White" Background="#FF303030" BorderThickness="0" Padding="10" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible" FontSize="14" TextChanged="HandleTextChanged" />
         </Grid>
     </Border>
 </Window>
