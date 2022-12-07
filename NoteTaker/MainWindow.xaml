@@ -528,8 +528,8 @@
                         </Grid>
                     </DockPanel>
                     <DockPanel>
-                        <StackPanel Name="Content" Margin="0, 10, 0, 5">
-
+                        <StackPanel Margin="0, 10, 0, 5">
+                            <ItemsControl ItemsSource="{Binding NoteCards}"/>
                         </StackPanel>
                     </DockPanel>
                 </StackPanel>

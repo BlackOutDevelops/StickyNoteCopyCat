@@ -23,8 +23,8 @@ namespace NoteTaker.ViewModels
             }
         }
 
-        private StringBuilder _noteString = new StringBuilder("Take a note...");
-        public StringBuilder NoteString
+        private string _noteString = "Take a note...";
+        public string NoteString
         {
             get { return _noteString; }
             set

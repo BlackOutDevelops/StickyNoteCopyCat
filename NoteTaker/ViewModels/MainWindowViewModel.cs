@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Data;
 
 namespace NoteTaker.ViewModels
 {
-    class MainWindowViewModel : INotifyPropertyChanged
+    public class MainWindowViewModel : INotifyPropertyChanged
     {
         private int _scrollBarArrowButtonHeight = 0;
         public int ScrollBarArrowButtonHeight
@@ -66,16 +68,30 @@ namespace NoteTaker.ViewModels
             }
         }
 
-        private Thickness _StackPanelMargin = new Thickness(0, 0, 0, 0);
+        private Thickness _stackPanelMargin = new Thickness(0, 0, 0, 0);
         public Thickness StackPanelMargin
         {
-            get { return _StackPanelMargin; }
+            get { return _stackPanelMargin; }
             set
             {
-                if (value != _StackPanelMargin)
+                if (value != _stackPanelMargin)
                 {
-                    _StackPanelMargin = value;
+                    _stackPanelMargin = value;
                     FirePropertyChanged(nameof(StackPanelMargin));
+                }
+            }
+        }
+
+        private ObservableCollection<NoteCard> _noteCards = new ObservableCollection<NoteCard>();
+        public ObservableCollection<NoteCard> NoteCards
+        {
+            get { return _noteCards; }
+            set
+            {
+                if (value != _noteCards)
+                {
+                    _noteCards = value;
+                    FirePropertyChanged(nameof(NoteCards));
                 }
             }
         }

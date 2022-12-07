@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
@@ -37,9 +38,10 @@ namespace NoteTaker
                        LeftLocation;
         private List<NoteCardModel> AllNotes;
 
-        private MainWindowViewModel mwvm = new MainWindowViewModel();
+        public MainWindowViewModel mwvm = new MainWindowViewModel();
 
         private Dictionary<int, NoteWindow> ListOfNoteWindows = new Dictionary<int, NoteWindow>();
+
         public MainWindow()
         {
             InitializeComponent();
@@ -59,13 +61,18 @@ namespace NoteTaker
             {
                 NoteCard note = new NoteCard();
                 note.vm.Id = noteCard.Id;
-                note.vm.NoteString.Clear();
-                note.vm.NoteString.Append(noteCard.Note);
+                note.vm.NoteString = noteCard.Note;
                 note.vm.UpdatedTime = DateTime.ParseExact(noteCard.UpdatedTime, "M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                 note.Padding = new Thickness(0, 0, 0, 7);
                 note.MouseDoubleClick += HandleNoteCardMouseDoubleClick;
-                Content.Children.Add(note);
+                mwvm.NoteCards.Add(note);
+                OrderNoteCards();
             }
+        }
+
+        public void OrderNoteCards()
+        {
+            mwvm.NoteCards = new ObservableCollection<NoteCard>(mwvm.NoteCards.OrderByDescending(n => n.vm.UpdatedTime));
         }
         #endregion
 
@@ -181,7 +188,7 @@ namespace NoteTaker
             noteCard.MouseDoubleClick += HandleNoteCardMouseDoubleClick;
             noteCard.BentRectangleTop.Visibility = Visibility.Visible;
             noteCard.BentRectangleBottom.Visibility = Visibility.Visible;
-            Content.Children.Insert(0, noteCard);
+            mwvm.NoteCards.Insert(0, noteCard);
         }
 
         private void HandleNoteCardMouseDoubleClick(object sender, RoutedEventArgs e)
@@ -535,11 +542,11 @@ namespace NoteTaker
                 MagnifyingGlassTop.Stroke = Brushes.WhiteSmoke;
             }
 
-            if (Content == null)
+            if (mwvm.NoteCards == null)
                 return;
 
-            // SEARCH WORKS LOOKS TERRIBLE, OPTIMIZE AND CLEAN UP
-            var cardEnumerator = Content.Children.GetEnumerator();
+            // SEARCH WORKS - LOOKS TERRIBLE, OPTIMIZE AND CLEAN UP
+            var cardEnumerator = mwvm.NoteCards.GetEnumerator();
             if (IsUsed && !IsSettingPlaceHolder && searchBox.Text != "")
             {
                 while (cardEnumerator.MoveNext())
@@ -587,14 +594,12 @@ namespace NoteTaker
                 {
                     NoteCard currentCard = cardEnumerator.Current as NoteCard;
                     currentCard.Visibility = Visibility.Visible;
-
-                    string temp = currentCard.NoteCardText.Text;
-                    int numberOfCharacters = currentCard.NoteCardText.Text.Length;
-                    currentCard.NoteCardText.Text = currentCard.NoteCardText.Text.Remove(0, currentCard.NoteCardText.Text.Length);
-                    for (int i = 0; i < numberOfCharacters; i++)
-                    {
-                        currentCard.NoteCardText.Inlines.Add(new Run(temp[i].ToString()));
-                    }
+                    Binding textBlockBinding = new Binding();
+                    textBlockBinding.Source = currentCard.vm;
+                    textBlockBinding.Path = new PropertyPath(nameof(currentCard.vm.NoteString));
+                    textBlockBinding.Mode = BindingMode.TwoWay;
+                    textBlockBinding.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
+                    currentCard.NoteCardText.SetBinding(TextBlock.TextProperty, textBlockBinding);
                 }    
             }
         }

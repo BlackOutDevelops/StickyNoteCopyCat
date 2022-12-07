@@ -44,13 +44,9 @@ namespace NoteTaker
             IsInDatabase = isInDatabase;
             Note = notes;
             NoteCardVM = notes.DataContext as NoteCardViewModel;
+            DataContext = NoteCardVM;
             InitializeComponent();
             HandleWindowStateChanged(this, EventArgs.Empty);
-
-            // Change due to saving unwanted data
-            if (IsInDatabase)
-                NoteTextBox.Text = notes.vm.NoteString.ToString();
-            NoteCardVM.PropertyChanged += NoteCard_PropertyChanged;
         }
 
         #region EventHandlers
@@ -143,14 +139,13 @@ namespace NoteTaker
             }
         }
 
-        // Needs Work
         private void HandleAddButtonClick(object sender, RoutedEventArgs e)
         {
             NoteCard note = new NoteCard();
             NoteWindow newNote = new NoteWindow(note, false);
             newNote.Show();
             note.Padding = new Thickness(0, 0, 0, 7);
-            //Content.Children.Add(note);
+            ((MainWindow)App.Current.MainWindow).mwvm.NoteCards.Insert(0, note);
         }
         #endregion
         // GOOD
@@ -429,33 +424,28 @@ namespace NoteTaker
             }
         }
 
-        // MAYBE - Used to grab text in user control
-        private void NoteCard_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            //if (e.PropertyName == nameof(NoteCardVM.NoteString))
-        }
-
         // COULD BE OPTIMIZED
         private void HandleTextChanged(object sender, TextChangedEventArgs e)
         {
             var noteTextBox = sender as TextBox;
 
-            //if (noteTextBox.Text.Equals("Take a note..."))
-            //{
-            //    noteTextBox.Text = string.Empty;
-            //    noteTextBox.Foreground = Brushes.Gray;
-            //}
+            // Work On
+            if (noteTextBox.Text.Equals("Take a note..."))
+            {
+                noteTextBox.Foreground = Brushes.Gray;
+            }
 
             if (NoteCardVM.NoteString.ToString() != noteTextBox.Text)
             {
                 // Update UI
-                NoteCardVM.NoteString.Clear();
-                NoteCardVM.NoteString.Append(noteTextBox.Text);
+                NoteCardVM.NoteString = noteTextBox.Text;
                 NoteCardVM.FirePropertyChanged(nameof(NoteCardVM.NoteString));
                 NoteCardVM.UpdatedTime = DateTime.Now;
+                ((MainWindow)App.Current.MainWindow).OrderNoteCards();
+
 
                 // Update model to send to database
-                NoteCardM.Note = NoteCardVM.NoteString.ToString();
+                NoteCardM.Note = NoteCardVM.NoteString;
                 NoteCardM.UpdatedTime = NoteCardVM.UpdatedTime.ToString();
 
                 if (!IsInDatabase)
@@ -470,17 +460,6 @@ namespace NoteTaker
                     SQLiteDatabaseAccess.SaveCurrentNote(NoteCardM);
                 }
             }
-        }
-
-        private void HandleDeleteButtonClicked(object sender, RoutedEventArgs e)
-        {
-            //SearchBox.Text = "Search...";
-            //SearchBox.Focus();
-
-            //DeleteTextButton.Visibility = Visibility.Hidden;
-            //DeleteColumn.Width = new GridLength(0);
-            //MagnifyingGlassHandle.Stroke = Brushes.DarkGray;
-            //MagnifyingGlassTop.Stroke = Brushes.DarkGray;
         }
 
         private void TextDeleteAndSpaceHandler(object sender, KeyEventArgs e)
