@@ -1,6 +1,7 @@
 ﻿using NoteTaker.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
@@ -29,7 +30,9 @@ namespace NoteTaker
     {
         public bool IsWithinWindowBar,
                     IsHeightBackToMinHeight,
-                    IsWidthBackToMinWidth;
+                    IsWidthBackToMinWidth,
+                    IsUsed,
+                    IsSettingPlaceHolder;
         private double TopMinLocationFromTop,
                        LeftLocation;
         private List<NoteCardModel> AllNotes;
@@ -456,13 +459,7 @@ namespace NoteTaker
         {
             var searchBox = sender as TextBox;
 
-            if (searchBox.Text == String.Empty || string.IsNullOrWhiteSpace(searchBox.Text))
-                searchBox.Text = "Search...";
-
-            if (!searchBox.Text.Equals("Search..."))
-                searchBox.Foreground = Brushes.DarkGray;
-            else if (searchBox.Text.Equals("Search..."))
-                searchBox.Foreground = Brushes.DarkGray;
+            searchBox.Foreground = Brushes.DarkGray;
         }
 
         private void HandleTextBoxGotFocus(object sender, RoutedEventArgs e)
@@ -475,13 +472,13 @@ namespace NoteTaker
                 searchBox.Foreground = Brushes.LightGray;
         }
 
-        private void SetCursorToBeginningHandler(object sender, MouseButtonEventArgs e)
+        private void HandleSetCursorToBeginning(object sender, MouseButtonEventArgs e)
         {
             TextBox searchBox = sender as TextBox;
 
             if (searchBox != null)
             {
-                if (searchBox.Text.Equals("Search..."))
+                if (searchBox.Text.Equals("Search...") && !IsUsed)
                 {
                     e.Handled = true;
                     searchBox.Focus();
@@ -490,47 +487,144 @@ namespace NoteTaker
             }
         }
 
-        private void TextInputHandler(object sender, TextCompositionEventArgs e)
+        private void HandleTextInput(object sender, TextCompositionEventArgs e)
         {
             var searchBox = sender as TextBox;
 
-            if (searchBox.Text.Equals("Search..."))
+            if (searchBox.Text.Equals("Search...") && searchBox.Foreground != Brushes.LightGray)
             {
                 searchBox.Text = string.Empty;
                 searchBox.Foreground = Brushes.Gray;
             }
 
             searchBox.Foreground = Brushes.LightGray;
-            DeleteTextButton.Visibility = Visibility.Visible;
-            DeleteColumn.Width = new GridLength(32);
-            MagnifyingGlassHandle.Stroke = Brushes.WhiteSmoke;
-            MagnifyingGlassTop.Stroke = Brushes.WhiteSmoke;
         }
 
         private void HandleDeleteButtonClicked(object sender, RoutedEventArgs e)
         {
+            IsSettingPlaceHolder = true;
             SearchBox.Text = "Search...";
+            IsSettingPlaceHolder = false;
             SearchBox.Focus();
+            SearchBox.Select(0, 0);
 
             DeleteTextButton.Visibility = Visibility.Hidden;
             DeleteColumn.Width = new GridLength(0);
             MagnifyingGlassHandle.Stroke = Brushes.DarkGray;
             MagnifyingGlassTop.Stroke = Brushes.DarkGray;
+            IsUsed = false;
         }
 
-        private void TextDeleteAndSpaceHandler(object sender, KeyEventArgs e)
+        private void HandleTextChanged(object sender, TextChangedEventArgs e)
+        {
+            var searchBox = sender as TextBox;
+
+            if (e.Changes.First().AddedLength > 1 && searchBox.Text.Contains("Search...") && !searchBox.Text.Equals("Search..."))
+            {
+                searchBox.Text = searchBox.Text.Remove(searchBox.Text.Length - 9);
+                searchBox.Select(searchBox.Text.Length, 0);
+                searchBox.Foreground = Brushes.LightGray;
+            }
+
+            if (e.UndoAction == UndoAction.Create)
+            {
+                IsUsed = true;
+                DeleteTextButton.Visibility = Visibility.Visible;
+                DeleteColumn.Width = new GridLength(32);
+                MagnifyingGlassHandle.Stroke = Brushes.WhiteSmoke;
+                MagnifyingGlassTop.Stroke = Brushes.WhiteSmoke;
+            }
+
+            if (Content == null)
+                return;
+
+            // SEARCH WORKS LOOKS TERRIBLE, OPTIMIZE AND CLEAN UP
+            var cardEnumerator = Content.Children.GetEnumerator();
+            if (IsUsed && !IsSettingPlaceHolder && searchBox.Text != "")
+            {
+                while (cardEnumerator.MoveNext())
+                {
+                    List<int> listOfIndexes = new List<int>();
+                    NoteCard currentCard = cardEnumerator.Current as NoteCard;
+                    if (!currentCard.vm.NoteString.ToString().Contains(searchBox.Text))
+                        currentCard.Visibility = Visibility.Collapsed;
+                    else
+                    {
+                        currentCard.Visibility = Visibility.Visible;
+
+                        for (int index = 0; index < currentCard.NoteCardText.Text.Length; index += searchBox.Text.Length)
+                        {
+                            index = currentCard.NoteCardText.Text.IndexOf(searchBox.Text, index);
+                            if (index == -1)
+                                break;
+                            listOfIndexes.Add(index);
+                        }
+
+                        string temp = currentCard.NoteCardText.Text;
+                        int numberOfCharacters = currentCard.NoteCardText.Text.Length;
+                        currentCard.NoteCardText.Text = currentCard.NoteCardText.Text.Remove(0, currentCard.NoteCardText.Text.Length);
+                        for (int i = 0; i < numberOfCharacters; i++)
+                        {
+                            if (listOfIndexes.Contains(i))
+                            {
+                                currentCard.NoteCardText.Inlines.Add(new Run()
+                                {
+                                    Text = searchBox.Text,
+                                    Background = Brushes.Yellow,
+                                    Foreground = Brushes.Black
+                                });
+                                i += searchBox.Text.Length - 1;
+                            }
+                            else
+                                currentCard.NoteCardText.Inlines.Add(new Run(temp[i].ToString()));
+                        }
+                    }
+                }
+            }
+            else
+            {
+                while (cardEnumerator.MoveNext())
+                {
+                    NoteCard currentCard = cardEnumerator.Current as NoteCard;
+                    currentCard.Visibility = Visibility.Visible;
+
+                    string temp = currentCard.NoteCardText.Text;
+                    int numberOfCharacters = currentCard.NoteCardText.Text.Length;
+                    currentCard.NoteCardText.Text = currentCard.NoteCardText.Text.Remove(0, currentCard.NoteCardText.Text.Length);
+                    for (int i = 0; i < numberOfCharacters; i++)
+                    {
+                        currentCard.NoteCardText.Inlines.Add(new Run(temp[i].ToString()));
+                    }
+                }    
+            }
+        }
+
+        private void HandleTextDeleteAndSpace(object sender, KeyEventArgs e)
         {
             var searchBox = sender as TextBox;
 
             if (searchBox.Text == String.Empty)
             {
+                IsSettingPlaceHolder = true;
                 searchBox.Text = "Search...";
+                IsSettingPlaceHolder = false;
                 searchBox.Foreground = Brushes.Gray;
+                DeleteTextButton.Visibility = Visibility.Hidden;
+                DeleteColumn.Width = new GridLength(0);
+                MagnifyingGlassHandle.Stroke = Brushes.DarkGray;
+                MagnifyingGlassTop.Stroke = Brushes.DarkGray;
+                IsUsed = false;
             }
 
 
-            if (searchBox.Text.Equals("Search...") && e.Key == Key.Space)
+            if (searchBox.Text.Equals("Search...") && e.Key == Key.Space && searchBox.SelectionStart == 0)
                 searchBox.Text = string.Empty;
+
+            if (searchBox.Text.Equals("Search...") && e.Key == Key.Delete && searchBox.SelectionStart == 0)
+                searchBox.IsReadOnly = true;
+
+            if (e.IsUp)
+                searchBox.IsReadOnly = false;
         }
         #endregion
 

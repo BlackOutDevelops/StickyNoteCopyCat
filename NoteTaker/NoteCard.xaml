@@ -67,7 +67,7 @@
     </UserControl.Resources>
     <Grid>
         <Border x:Name="NoteArea" Background="#FF303030" CornerRadius="2" MouseEnter="HandleMouseEntered" MouseLeave="HandleMouseLeft">
-            <TextBlock Padding="10, 22, 10, 20" Text="{Binding NoteString}" FontSize="14" MaxHeight="139" Foreground="WhiteSmoke" TextWrapping="Wrap" TextTrimming="WordEllipsis"/>
+            <TextBlock x:Name="NoteCardText" Padding="10, 22, 10, 20" Text="{Binding NoteString}" FontSize="14" MaxHeight="139" Foreground="WhiteSmoke" TextWrapping="Wrap" TextTrimming="WordEllipsis"/>
         </Border>
         <Border Height="3" Background="#FF414141" VerticalAlignment="Top" CornerRadius="2, 2, 0, 0"/>
         <Canvas>
