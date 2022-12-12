@@ -102,7 +102,7 @@ namespace NoteTaker
             }
             else
             {
-                existingNote = new NoteWindow(noteCard, true);
+                existingNote = new NoteWindow(noteCard, true, true);
                 existingNote.Show();
 
                 noteCard.IsOpen = true;

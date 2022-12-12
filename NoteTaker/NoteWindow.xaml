@@ -149,7 +149,7 @@
             <local:WindowBar Grid.Row="0"/>
 
             <!-- Contents -->
-            <TextBox x:Name="NoteTextBox" Text="{Binding NoteString, Mode=TwoWay}" Grid.Row="1" Foreground="White" Background="#FF303030" BorderThickness="0" Padding="10" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible" FontSize="14" TextChanged="HandleTextChanged" />
+            <TextBox x:Name="NoteTextBox" Text="{Binding NoteString, Mode=TwoWay}" Grid.Row="1" Foreground="White" Background="#FF303030" BorderThickness="0" Padding="10" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible" FontSize="14" TextChanged="HandleTextChanged" PreviewTextInput="HandleTextInput" PreviewKeyDown="HandleKeyDown"/>
         </Grid>
     </Border>
 </Window>

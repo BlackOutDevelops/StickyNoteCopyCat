@@ -97,7 +97,15 @@ namespace NoteTaker
 
         private void HandleCloseButtonClick(object sender, RoutedEventArgs e)
         {
-            CurrentWindow.Close();
+            if (CurrentWindow is MainWindow)
+                CurrentWindow.Close();
+            else if (CurrentWindow is NoteWindow)
+            {
+                if (!(CurrentWindow as NoteWindow).IsModified)
+                    ((MainWindow)App.Current.MainWindow).mwvm.NoteCards.Remove((CurrentWindow as NoteWindow).Note);
+
+                CurrentWindow.Close();
+            }
         }
 
         private void HandleMaximizeButtonClick(object sender, RoutedEventArgs e)
@@ -119,7 +127,7 @@ namespace NoteTaker
         private void HandleAddButtonClick(object sender, RoutedEventArgs e)
         {
             NoteCard noteCard = new NoteCard();
-            NoteWindow newNote = new NoteWindow(noteCard, false);
+            NoteWindow newNote = new NoteWindow(noteCard, false, false);
             newNote.Show();
             newNote.Closed += ((MainWindow)App.Current.MainWindow).HandleNoteWindowClosed;
             noteCard.Padding = new Thickness(0, 0, 0, 7);

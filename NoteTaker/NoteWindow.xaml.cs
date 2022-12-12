@@ -35,12 +35,14 @@ namespace NoteTaker
         public bool IsWithinWindowBar,
                     IsHeightBackToMinHeight,
                     IsWidthBackToMinWidth,
-                    IsInDatabase;
+                    IsInDatabase,
+                    IsModified;
         private double TopMinLocationFromTop,
                        LeftLocation;
 
-        public NoteWindow(NoteCard notes, bool isInDatabase)
+        public NoteWindow(NoteCard notes, bool isInDatabase, bool isModified)
         {
+            IsModified = isModified;
             IsInDatabase = isInDatabase;
             Note = notes;
             NoteCardVM = notes.DataContext as NoteCardViewModel;
@@ -48,7 +50,6 @@ namespace NoteTaker
             InitializeComponent();
             HandleWindowStateChanged(this, EventArgs.Empty);
         }
-
         #region EventHandlers
         #region Window EventHandlers
         private void HandleWindowActivated(object sender, EventArgs e)
@@ -92,7 +93,7 @@ namespace NoteTaker
             var noteTextBox = sender as TextBox;
 
             // Work On
-            if (noteTextBox.Text.Equals("Take a note..."))
+            if (noteTextBox.Text.Equals("Take a note...") && !IsModified)
             {
                 noteTextBox.Foreground = Brushes.Gray;
             }
@@ -122,6 +123,17 @@ namespace NoteTaker
                     SQLiteDatabaseAccess.SaveCurrentNote(NoteCardM);
                 }
             }
+        }
+        
+        private void HandleTextInput(object sender, TextCompositionEventArgs e)
+        {
+            IsModified = true;
+        }
+
+        private void HandleKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Space)
+                IsModified = true;
         }
         #endregion
         #endregion
