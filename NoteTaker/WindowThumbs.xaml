@@ -1,0 +1,58 @@
+﻿<UserControl x:Class="NoteTaker.WindowThumbs"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:NoteTaker"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800" LayoutUpdated="HandleLayoutUpdated">
+    <UserControl.Resources>
+        <Style x:Key="ThumbsStyle" TargetType="{x:Type Thumb}">
+            <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="Transparent"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Thumb}">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="Transparent" BorderThickness="{TemplateBinding BorderThickness}">
+                            <Grid>
+                                <Border Background="Transparent" BorderBrush="Transparent" BorderThickness="0,0,1,1"/>
+                                <Border Background="Transparent" BorderBrush="Transparent" BorderThickness="0,0,1,1" Margin="1"/>
+                                <Border Background="{TemplateBinding Background}" Margin="2"/>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition Height="40*"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="40*"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Top Thumbs -->
+            <Thumb x:Name="TopThumbLeft" Grid.Row="0" Grid.Column="0" Height="2" Margin="0, -1, 0, 0" VerticalAlignment="Top" Cursor="SizeNWSE" Style="{DynamicResource ThumbsStyle}" DragDelta="HandleTopLeftThumbDrag" DragStarted="HandleThumbDragStarted"/>
+            <Thumb x:Name="TopThumbMiddle" Grid.Row="0" Grid.Column="1" Height="2" Margin="0, -1, 0, 0" VerticalAlignment="Top" Cursor="SizeNS" Style="{DynamicResource ThumbsStyle}" DragDelta="HandleTopThumbDrag" DragStarted="HandleThumbDragStarted"/>
+            <Thumb x:Name="TopThumbRight" Grid.Row="0" Grid.Column="2" Height="2" Margin="0, -1, 0, 0" VerticalAlignment="Top" Cursor="SizeNESW" Style="{DynamicResource ThumbsStyle}" DragDelta="HandleTopRightThumbDrag" DragStarted="HandleThumbDragStarted"/>
+            <!-- Left Thumbs -->
+            <Thumb x:Name="LeftThumbTop" Grid.Row="0" Grid.Column="0" Width="2" Margin="-1, 0, 0, 0" HorizontalAlignment="Left" Cursor="SizeNWSE" Style="{DynamicResource ThumbsStyle}" DragDelta="HandleTopLeftThumbDrag" DragStarted="HandleThumbDragStarted"/>
+            <Thumb x:Name="LeftThumbMiddle" Grid.Row="1" Grid.Column="0" Width="2" Margin="-1, 0, 0, 0" HorizontalAlignment="Left" Cursor="SizeWE" Style="{DynamicResource ThumbsStyle}" DragDelta="HandleLeftThumbDrag" DragStarted="HandleThumbDragStarted"/>
+            <Thumb x:Name="LeftThumbBottom" Grid.Row="2" Grid.Column="0" Width="2" Margin="-1, 0, 0, 0" HorizontalAlignment="Left" Cursor="SizeNESW" Style="{DynamicResource ThumbsStyle}" DragDelta="HandleBottomLeftThumbDrag" DragStarted="HandleThumbDragStarted"/>
+            <!-- Right Thumbs -->
+            <Thumb x:Name="RightThumbTop" Grid.Row="0" Grid.Column="2" Width="2" Margin="0, 0, -2, 0" HorizontalAlignment="Right" Cursor="SizeNESW" Style="{DynamicResource ThumbsStyle}" DragDelta="HandleTopRightThumbDrag" DragStarted="HandleThumbDragStarted"/>
+            <Thumb x:Name="RightThumbMiddle" Grid.Row="1" Grid.Column="2" Width="2" Margin="0, 0, -2, 0" HorizontalAlignment="Right" Cursor="SizeWE" Style="{DynamicResource ThumbsStyle}" DragDelta="HandleRightThumbDrag" DragStarted="HandleThumbDragStarted"/>
+            <Thumb x:Name="RightThumbBottom" Grid.Row="2" Grid.Column="2" Width="2" Margin="0, 0, -2, 0" HorizontalAlignment="Right" Cursor="SizeNWSE" Style="{DynamicResource ThumbsStyle}" DragDelta="HandleBottomRightThumbDrag" DragStarted="HandleThumbDragStarted"/>
+            <!-- Bottom Thumbs -->
+            <Thumb x:Name="BottomThumbLeft" Grid.Row="3" Grid.Column="0" Height="2" Margin="0, 2, 0, 0" VerticalAlignment="Bottom" Cursor="SizeNESW" Style="{DynamicResource ThumbsStyle}" DragDelta="HandleBottomLeftThumbDrag" DragStarted="HandleThumbDragStarted"/>
+            <Thumb x:Name="BottomThumbMiddle" Grid.Row="3" Grid.Column="1" Height="2" Margin="0, 2, 0, 0" VerticalAlignment="Bottom" Cursor="SizeNS" Style="{DynamicResource ThumbsStyle}" DragDelta="HandleBottomThumbDrag" DragStarted="HandleThumbDragStarted"/>
+            <Thumb x:Name="BottomThumbRight" Grid.Row="3" Grid.Column="2" Height="2" Margin="0, 2, 0, 0" VerticalAlignment="Bottom" Cursor="SizeNWSE" Style="{DynamicResource ThumbsStyle}" DragDelta="HandleBottomRightThumbDrag" DragStarted="HandleThumbDragStarted"/>
+        </Grid>
+</UserControl>
