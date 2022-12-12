@@ -252,7 +252,7 @@ namespace NoteTaker
                 {
                     List<int> listOfIndexes = new List<int>();
                     NoteCard currentCard = cardEnumerator.Current as NoteCard;
-                    if (!currentCard.vm.NoteString.ToString().Contains(searchBox.Text))
+                    if (!currentCard.vm.NoteString.ToString().ToLower().Contains(searchBox.Text.ToLower()))
                         currentCard.Visibility = Visibility.Collapsed;
                     else
                     {
@@ -260,13 +260,13 @@ namespace NoteTaker
 
                         for (int index = 0; index < currentCard.NoteCardText.Text.Length; index += searchBox.Text.Length)
                         {
-                            index = currentCard.NoteCardText.Text.IndexOf(searchBox.Text, index);
+                            index = currentCard.NoteCardText.Text.ToLower().IndexOf(searchBox.Text.ToLower(), index);
                             if (index == -1)
                                 break;
                             listOfIndexes.Add(index);
                         }
 
-                        string temp = currentCard.NoteCardText.Text;
+                        string noteCardTextBeforeUpdate = currentCard.NoteCardText.Text;
                         int numberOfCharacters = currentCard.NoteCardText.Text.Length;
                         currentCard.NoteCardText.Text = currentCard.NoteCardText.Text.Remove(0, currentCard.NoteCardText.Text.Length);
                         for (int i = 0; i < numberOfCharacters; i++)
@@ -275,14 +275,14 @@ namespace NoteTaker
                             {
                                 currentCard.NoteCardText.Inlines.Add(new Run()
                                 {
-                                    Text = searchBox.Text,
+                                    Text = noteCardTextBeforeUpdate.Substring(i, searchBox.Text.Length),
                                     Background = Brushes.Yellow,
                                     Foreground = Brushes.Black
                                 });
                                 i += searchBox.Text.Length - 1;
                             }
                             else
-                                currentCard.NoteCardText.Inlines.Add(new Run(temp[i].ToString()));
+                                currentCard.NoteCardText.Inlines.Add(new Run(noteCardTextBeforeUpdate[i].ToString()));
                         }
                     }
                 }
