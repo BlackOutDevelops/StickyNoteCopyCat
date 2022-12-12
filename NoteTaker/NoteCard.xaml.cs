@@ -57,9 +57,7 @@ namespace NoteTaker
 
         private void HandleMouseLeft(object sender, MouseEventArgs e)
         {
-            var note = sender as Border;
-
-            note.Background = new SolidColorBrush(Color.FromRgb(48, 48, 48));
+            NoteArea.Background = new SolidColorBrush(Color.FromRgb(48, 48, 48));
             NoteSettings.Visibility = Visibility.Hidden;
             NoteLastUpdated.Visibility = Visibility.Visible;
         }
