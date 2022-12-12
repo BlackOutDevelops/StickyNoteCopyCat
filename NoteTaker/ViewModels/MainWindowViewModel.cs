@@ -54,7 +54,7 @@ namespace NoteTaker.ViewModels
             }
         }
 
-        private Thickness _scrollViewerMargin = new Thickness(10, 0, -5, 0);
+        private Thickness _scrollViewerMargin = new Thickness(10, 0, -5, 1);
         public Thickness ScrollViewerMargin
         {
             get { return _scrollViewerMargin; }
