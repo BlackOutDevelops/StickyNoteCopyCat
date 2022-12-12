@@ -102,7 +102,8 @@ namespace NoteTaker
             else if (CurrentWindow is NoteWindow)
             {
                 if (!(CurrentWindow as NoteWindow).IsModified)
-                    ((MainWindow)App.Current.MainWindow).mwvm.NoteCards.Remove((CurrentWindow as NoteWindow).Note);
+                    if (((MainWindow)App.Current.MainWindow) != null)
+                        ((MainWindow)App.Current.MainWindow).mwvm.NoteCards.Remove((CurrentWindow as NoteWindow).Note);
 
                 CurrentWindow.Close();
             }
