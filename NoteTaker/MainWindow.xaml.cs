@@ -40,7 +40,7 @@ namespace NoteTaker
 
         public MainWindowViewModel mwvm = new MainWindowViewModel();
 
-        private Dictionary<int, NoteWindow> ListOfNoteWindows = new Dictionary<int, NoteWindow>();
+        public Dictionary<int, NoteWindow> ListOfNoteWindows = new Dictionary<int, NoteWindow>();
 
         public MainWindow()
         {
@@ -86,22 +86,59 @@ namespace NoteTaker
                 Keyboard.ClearFocus();
             }
         }
-        private void HandleMouseDownRow(object sender, MouseButtonEventArgs e)
+
+        public void HandleNoteCardMouseDoubleClick(object sender, RoutedEventArgs e)
         {
-            var windowBar = sender as Border;
-            Point pointToWindow = e.GetPosition(this);
-            Point mousePosition = PointToScreen(pointToWindow);
+            var noteCard = sender as NoteCard;
+            NoteWindow existingNote;
+            noteCard.BentRectangleTop.Visibility = Visibility.Visible;
+            noteCard.BentRectangleBottom.Visibility = Visibility.Visible;
 
-            if (e.ChangedButton == MouseButton.Left && WindowState == WindowState.Maximized)
+            // Fix this to focus textbox each time window is focused
+            if (noteCard.IsOpen && ListOfNoteWindows.TryGetValue(noteCard.vm.Id, out existingNote))
             {
-                WindowState = WindowState.Normal;
-
-                Left = mousePosition.X - windowBar.ActualWidth / 2;
-                Top = mousePosition.Y - windowBar.ActualHeight / 2;
-                DragMove();
+                existingNote.Focus();
+                FocusManager.SetFocusedElement(existingNote.Griddy, existingNote.NoteTextBox);
             }
-            else if (e.ChangedButton == MouseButton.Left)
-                DragMove();
+            else
+            {
+                existingNote = new NoteWindow(noteCard, true);
+                existingNote.Show();
+
+                noteCard.IsOpen = true;
+                ListOfNoteWindows.Add(noteCard.vm.Id, existingNote);
+                existingNote.Closed += HandleNoteWindowClosed;
+            }
+        }
+
+        public void HandleNoteWindowClosed(object sender, EventArgs e)
+        {
+
+            var noteWindow = sender as NoteWindow;
+            noteWindow.Note.BentRectangleTop.Visibility = Visibility.Hidden;
+            noteWindow.Note.BentRectangleBottom.Visibility = Visibility.Hidden;
+            noteWindow.Note.IsOpen = false;
+            ListOfNoteWindows.Remove(noteWindow.Note.vm.Id);
+        }
+
+        private void HandleWindowStateChanged(object sender, EventArgs e)
+        {
+            var window = sender as Window;
+
+            if (window.WindowState == WindowState.Maximized)
+            {
+                WindowBorder.BorderThickness = new Thickness(0);
+                WindowBorder.CornerRadius = new CornerRadius(0);
+                WindowBorder.Padding = new Thickness(1, 1, 0, 0);
+                WindowBorder.Margin = new Thickness(7);
+            }
+            else if (window.WindowState == WindowState.Normal)
+            {
+                WindowBorder.BorderThickness = new Thickness(1);
+                WindowBorder.CornerRadius = new CornerRadius(8);
+                WindowBorder.Padding = new Thickness(1, 1, 0, 0);
+                WindowBorder.Margin = new Thickness(15);
+            }
         }
 
         private void HandleWindowActivated(object sender, EventArgs e)
@@ -122,110 +159,7 @@ namespace NoteTaker
             WindowBorder.BorderBrush = new SolidColorBrush(Color.FromArgb(100, 100, 100, 100));
             SearchBox.Foreground = Brushes.DarkGray;
         }
-
-        private void HandleWindowStateChanged(object sender, EventArgs e)
-        {
-            var window = sender as Window;
-            var closeButtonBorder = CloseButton.Template.FindName("ButtonBorder", CloseButton) as Border;
-            var addButtonBorder = AddButton.Template.FindName("ButtonBorder", AddButton) as Border;
-
-            if (window.WindowState == WindowState.Maximized)
-            {
-                WindowBorder.BorderThickness = new Thickness(0);
-                WindowBorder.CornerRadius = new CornerRadius(0);
-                WindowBorder.Padding = new Thickness(1, 1, 0, 0);
-                WindowBorder.Margin = new Thickness(7);
-                if (closeButtonBorder != null || addButtonBorder != null)
-                {
-                    closeButtonBorder.CornerRadius = new CornerRadius(0);
-                    addButtonBorder.CornerRadius = new CornerRadius(0);
-                }
-            }
-            else if (window.WindowState == WindowState.Normal)
-            {
-                WindowBorder.BorderThickness = new Thickness(1);
-                WindowBorder.CornerRadius = new CornerRadius(8);
-                WindowBorder.Padding = new Thickness(1, 1, 0, 0);
-                WindowBorder.Margin = new Thickness(15);
-                if (closeButtonBorder != null || addButtonBorder != null)
-                {
-                    closeButtonBorder.CornerRadius = new CornerRadius(0, 7, 0, 0);
-                    addButtonBorder.CornerRadius = new CornerRadius(7, 0, 0, 0);
-                }
-            }
-        }
-
-        private void HandleCloseButtonClick(object sender, RoutedEventArgs e)
-        {
-            this.Close();
-        }
-
-        private void HandleMaximizeButtonClick(object sender, RoutedEventArgs e)
-        {
-            if (WindowState == WindowState.Normal)
-            {
-                WindowState = WindowState.Maximized;
-                MaximizeButton.Content = "❐";
-                MaximizeButton.FontSize = 20;
-                MaximizeButton.Padding = new Thickness(5);
-            }
-            else if (WindowState == WindowState.Maximized)
-            {
-                WindowState = WindowState.Normal;
-                MaximizeButton.Content = "□";
-                MaximizeButton.FontSize = 33;
-                MaximizeButton.Padding = new Thickness(-9);
-            }
-        }
-
-        private void HandleAddButtonClick(object sender, RoutedEventArgs e)
-        {
-            NoteCard noteCard = new NoteCard();
-            NoteWindow newNote = new NoteWindow(noteCard, false);
-            newNote.Show();
-            newNote.Closed += HandleNoteWindowClosed;
-            noteCard.Padding = new Thickness(0, 0, 0, 7);
-            noteCard.MouseDoubleClick += HandleNoteCardMouseDoubleClick;
-            noteCard.BentRectangleTop.Visibility = Visibility.Visible;
-            noteCard.BentRectangleBottom.Visibility = Visibility.Visible;
-            mwvm.NoteCards.Insert(0, noteCard);
-        }
-
-        private void HandleNoteCardMouseDoubleClick(object sender, RoutedEventArgs e)
-        {
-            var noteCard = sender as NoteCard;
-            NoteWindow existingNote;
-            noteCard.BentRectangleTop.Visibility = Visibility.Visible;
-            noteCard.BentRectangleBottom.Visibility = Visibility.Visible;
-            
-            // Fix this to focus textbox each time window is focused
-            if (noteCard.IsOpen && ListOfNoteWindows.TryGetValue(noteCard.vm.Id, out existingNote))
-            {
-                existingNote.Focus();
-                FocusManager.SetFocusedElement(existingNote.Griddy, existingNote.NoteTextBox);
-            }
-            else
-            {
-                existingNote = new NoteWindow(noteCard, true);
-                existingNote.Show();
-
-                noteCard.IsOpen = true;
-                ListOfNoteWindows.Add(noteCard.vm.Id, existingNote);
-                existingNote.Closed += HandleNoteWindowClosed;
-            }
-            
-        }
-
-        private void HandleNoteWindowClosed(object sender, EventArgs e)
-        {
-            var noteWindow = sender as NoteWindow;
-            noteWindow.Note.BentRectangleTop.Visibility = Visibility.Hidden;
-            noteWindow.Note.BentRectangleBottom.Visibility = Visibility.Hidden;
-            noteWindow.Note.IsOpen = false;
-            ListOfNoteWindows.Remove(noteWindow.Note.vm.Id);
-        }
-        #endregion
-        
+        #endregion      
         #region TextBox EventHandlers
         private void HandleTextBoxLostFocus(object sender, RoutedEventArgs e)
         {

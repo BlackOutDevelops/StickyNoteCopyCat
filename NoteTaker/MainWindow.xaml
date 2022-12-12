@@ -449,16 +449,8 @@
             <local:WindowThumbs Grid.RowSpan="2"/>
 
             <!-- Window Bar -->
-            <Border Grid.Row="0" MouseDown="HandleMouseDownRow" Background="{StaticResource ThemeColor}" CornerRadius="7, 7, 0, 0"/>
-            <DockPanel>
-                <Button x:Name="AddButton" Template="{DynamicResource AddButtonTemplate}" Content="+" Grid.Row="0" Width="40" BorderThickness="0" Background="{StaticResource ThemeColor}" FontSize="33" Padding="-7" 
-                    VerticalContentAlignment="Top" Foreground="{StaticResource MainFontColor}" FontWeight="UltraLight" Click="HandleAddButtonClick" DockPanel.Dock="Left"/>
-                <Button x:Name="CloseButton" Template="{DynamicResource CloseButtonTemplate}" Content="×" Grid.Row="0" Width="40" BorderThickness="0" Background="{StaticResource ThemeColor}" FontSize="33" Padding="-7" 
-                    VerticalContentAlignment="Top" Foreground="{StaticResource MainFontColor}" FontWeight="UltraLight" Click="HandleCloseButtonClick" DockPanel.Dock="Right"/>
-                <Button x:Name="MaximizeButton" Template="{DynamicResource MaximizeButtonTemplate}" Content="□" Grid.Row="0" Width="40"  BorderThickness="0" Background="{StaticResource ThemeColor}" FontSize="33" Padding="-9" 
-                    HorizontalAlignment="Right" VerticalContentAlignment="Top" Foreground="{StaticResource MainFontColor}" FontWeight="UltraLight" Click="HandleMaximizeButtonClick" DockPanel.Dock="Right"/>
-            </DockPanel>
-            
+            <local:WindowBar Grid.Row="0"/>
+
             <!-- Contents -->
             <ScrollViewer x:Name="ContentScrollViewer" Style="{DynamicResource ScrollViewerStyle}" Grid.Row="2" Margin="{Binding ScrollViewerMargin}">
                 <StackPanel Grid.Row="1" Margin="{Binding StackPanelMargin}">

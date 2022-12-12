@@ -1,13 +1,12 @@
-﻿<Window x:Class="NoteTaker.NoteWindow"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:NoteTaker"
-        mc:Ignorable="d"
-        x:Name="NotesWindow" Title="Note Taker" MinHeight="350" MinWidth="355" Height="350" Width="355" WindowStyle="None" AllowsTransparency="True" Background="Transparent" ResizeMode="CanResize" WindowStartupLocation="CenterScreen" 
-        Activated="HandleWindowActivated" Deactivated="HandleWindowDeactivated" StateChanged="HandleWindowStateChanged">
-    <Window.Resources>
+﻿<UserControl x:Class="NoteTaker.WindowBar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:NoteTaker"
+             mc:Ignorable="d" 
+             LayoutUpdated="HandleLayoutUpdated">
+    <UserControl.Resources>
         <SolidColorBrush x:Key="ThemeColor" Color="#FF262626"/>
         <SolidColorBrush x:Key="AccentColor" Color="#FF414141"/>
         <SolidColorBrush x:Key="MainFontColor" Color="Gray"/>
@@ -90,66 +89,17 @@
                 </Trigger>
             </ControlTemplate.Triggers>
         </ControlTemplate>
-        <Style x:Key="ThumbsStyle" TargetType="{x:Type Thumb}">
-            <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false"/>
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="Transparent"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type Thumb}">
-                        <Border Background="{TemplateBinding Background}" BorderBrush="Transparent" BorderThickness="{TemplateBinding BorderThickness}">
-                            <Grid>
-                                <Border Background="Transparent" BorderBrush="Transparent" BorderThickness="0,0,1,1"/>
-                                <Border Background="Transparent" BorderBrush="Transparent" BorderThickness="0,0,1,1" Margin="1"/>
-                                <Border Background="{TemplateBinding Background}" Margin="2"/>
-                            </Grid>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <ControlTemplate x:Key="SearchBarButtonTemplate" TargetType="{x:Type ButtonBase}">
-            <Border x:Name="ButtonBorder" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True">
-                <ContentPresenter x:Name="contentPresenter" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" 
-                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-            </Border>
-            <ControlTemplate.Triggers>
-                <Trigger Property="Button.IsDefaulted" Value="true">
-                    <Setter Property="BorderBrush" TargetName="ButtonBorder" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
-                </Trigger>
-                <Trigger Property="IsMouseOver" Value="true">
-                    <Setter Property="Background" TargetName="ButtonBorder" Value="{StaticResource Button.MouseOver.Background}"/>
-                    <Setter Property="BorderBrush" TargetName="ButtonBorder" Value="{StaticResource Button.MouseOver.Border}"/>
-                </Trigger>
-                <Trigger Property="IsPressed" Value="true">
-                    <Setter Property="Background" TargetName="ButtonBorder" Value="{StaticResource Button.Pressed.Background}"/>
-                    <Setter Property="BorderBrush" TargetName="ButtonBorder" Value="{StaticResource Button.Pressed.Border}"/>
-                </Trigger>
-                <Trigger Property="IsEnabled" Value="false">
-                    <Setter Property="Background" TargetName="ButtonBorder" Value="{StaticResource Button.Disabled.Background}"/>
-                    <Setter Property="BorderBrush" TargetName="ButtonBorder" Value="{StaticResource Button.Disabled.Border}"/>
-                    <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{StaticResource Button.Disabled.Foreground}"/>
-                </Trigger>
-            </ControlTemplate.Triggers>
-        </ControlTemplate>
-    </Window.Resources>
-    
-    <Border x:Name="WindowBorder" Background="{StaticResource ThemeColor}" >
-        <Grid x:Name="Griddy">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="5*"/>
-                <RowDefinition Height="38"/>
-            </Grid.RowDefinitions>
+    </UserControl.Resources>
 
-            <!-- Window Thumbs -->
-            <local:WindowThumbs Grid.RowSpan="3"/>
-
-            <!-- Window Bar -->
-            <local:WindowBar Grid.Row="0"/>
-
-            <!-- Contents -->
-            <TextBox x:Name="NoteTextBox" Text="{Binding NoteString, Mode=TwoWay}" Grid.Row="1" Foreground="White" Background="#FF303030" BorderThickness="0" Padding="10" TextWrapping="Wrap" VerticalScrollBarVisibility="Visible" FontSize="14" TextChanged="HandleTextChanged" />
-        </Grid>
-    </Border>
-</Window>
+    <Grid>
+        <Border MouseDown="HandleMouseDownRow" Background="{StaticResource ThemeColor}" CornerRadius="7, 7, 0, 0"/>
+        <DockPanel>
+            <Button x:Name="AddButton" Template="{DynamicResource AddButtonTemplate}" Content="+" BorderThickness="0" Background="{StaticResource ThemeColor}" FontSize="33" 
+                    VerticalContentAlignment="Top" Foreground="{StaticResource MainFontColor}" FontWeight="UltraLight" Click="HandleAddButtonClick" DockPanel.Dock="Left"/>
+            <Button x:Name="CloseButton" Template="{DynamicResource CloseButtonTemplate}" Content="×" BorderThickness="0" Background="{StaticResource ThemeColor}" FontSize="33"  
+                    VerticalContentAlignment="Top" Foreground="{StaticResource MainFontColor}" FontWeight="UltraLight" Click="HandleCloseButtonClick" DockPanel.Dock="Right"/>
+            <Button x:Name="MaximizeButton" Template="{DynamicResource MaximizeButtonTemplate}" Content="□" BorderThickness="0" Background="{StaticResource ThemeColor}" FontSize="33" 
+                    HorizontalAlignment="Right" VerticalContentAlignment="Top" Foreground="{StaticResource MainFontColor}" FontWeight="UltraLight" Click="HandleMaximizeButtonClick" DockPanel.Dock="Right"/>
+        </DockPanel>
+    </Grid>
+</UserControl>
