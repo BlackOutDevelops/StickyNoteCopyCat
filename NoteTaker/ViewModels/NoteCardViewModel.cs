@@ -4,6 +4,8 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
 
 namespace NoteTaker.ViewModels
 {
@@ -49,6 +51,80 @@ namespace NoteTaker.ViewModels
                     FirePropertyChanged(nameof(UpdatedTime));
                 }
             }
+        }
+
+        private bool _isOpen;
+        public bool IsOpen
+        {
+            get { return _isOpen; }
+            set
+            {
+                if (value != _isOpen)
+                {
+                    _isOpen = value;
+                    FirePropertyChanged(nameof(IsOpen));
+                }
+            }
+        }
+
+        public ICommand DeleteNoteCommand { get; set; }
+        public ICommand OpenOrCloseNoteCommand { get; set; }
+
+        public NoteCardViewModel() 
+        {
+            DeleteNoteCommand = new Command(DeleteNoteCommandExecute, DeleteNoteCommandCanExecute);
+            OpenOrCloseNoteCommand = new Command(OpenOrCloseNoteCommandExecute, OpenOrCloseNoteCommandCanExecute);
+        }
+
+        private bool OpenOrCloseNoteCommandCanExecute(object parameter)
+        {
+            return true;
+        }
+
+        private void OpenOrCloseNoteCommandExecute(object parameter)
+        {
+            var noteCard = parameter as NoteCard;
+            NoteWindow noteWindow;
+
+            if (noteCard.vm.IsOpen)
+            {
+                if(((MainWindow)Application.Current.MainWindow).ListOfNoteWindows.TryGetValue(noteCard.vm.Id, out noteWindow))
+                {
+                    noteWindow.Close();
+                    ((MainWindow)Application.Current.MainWindow).ListOfNoteWindows.Remove(noteCard.vm.Id);
+                }
+                    
+                noteCard.vm.IsOpen = false;
+            }
+            else
+            {
+                noteCard.vm.IsOpen = true;
+                noteCard.BentRectangleTop.Visibility = Visibility.Visible;
+                noteCard.BentRectangleBottom.Visibility = Visibility.Visible;
+                noteWindow = new NoteWindow(noteCard, true, true);
+                ((MainWindow)Application.Current.MainWindow).ListOfNoteWindows.Add(noteCard.vm.Id, noteWindow);
+                noteWindow.Show();
+                noteWindow.Closed += ((MainWindow)Application.Current.MainWindow).HandleNoteWindowClosed;
+            }
+        }
+
+        private bool DeleteNoteCommandCanExecute(object parameter)
+        {
+            return true;
+        }
+
+        private void DeleteNoteCommandExecute(object parameter)
+        {
+            var noteCard = parameter as NoteCard;
+            NoteCardModel noteToDeleteInDatabase = new NoteCardModel()
+            {
+                Id = Id,
+                Note = NoteString.ToString(),
+                UpdatedTime = UpdatedTime.ToString()
+            };
+
+            SQLiteDatabaseAccess.DeleteNote(noteToDeleteInDatabase);
+            ((MainWindow)Application.Current.MainWindow).mwvm.NoteCards.Remove(noteCard);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

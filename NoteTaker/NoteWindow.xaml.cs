@@ -37,8 +37,6 @@ namespace NoteTaker
                     IsWidthBackToMinWidth,
                     IsInDatabase,
                     IsModified;
-        private double TopMinLocationFromTop,
-                       LeftLocation;
 
         public NoteWindow(NoteCard notes, bool isInDatabase, bool isModified)
         {

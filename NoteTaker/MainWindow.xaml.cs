@@ -34,8 +34,6 @@ namespace NoteTaker
                     IsWidthBackToMinWidth,
                     IsUsed,
                     IsSettingPlaceHolder;
-        private double TopMinLocationFromTop,
-                       LeftLocation;
         private List<NoteCardModel> AllNotes;
 
         public MainWindowViewModel mwvm = new MainWindowViewModel();
@@ -95,7 +93,7 @@ namespace NoteTaker
             noteCard.BentRectangleBottom.Visibility = Visibility.Visible;
 
             // Fix this to focus textbox each time window is focused
-            if (noteCard.IsOpen && ListOfNoteWindows.TryGetValue(noteCard.vm.Id, out existingNote))
+            if (noteCard.vm.IsOpen && ListOfNoteWindows.TryGetValue(noteCard.vm.Id, out existingNote))
             {
                 existingNote.Focus();
                 FocusManager.SetFocusedElement(existingNote.Griddy, existingNote.NoteTextBox);
@@ -105,7 +103,7 @@ namespace NoteTaker
                 existingNote = new NoteWindow(noteCard, true, true);
                 existingNote.Show();
 
-                noteCard.IsOpen = true;
+                noteCard.vm.IsOpen = true;
                 ListOfNoteWindows.Add(noteCard.vm.Id, existingNote);
                 existingNote.Closed += HandleNoteWindowClosed;
             }
@@ -117,7 +115,7 @@ namespace NoteTaker
             var noteWindow = sender as NoteWindow;
             noteWindow.Note.BentRectangleTop.Visibility = Visibility.Hidden;
             noteWindow.Note.BentRectangleBottom.Visibility = Visibility.Hidden;
-            noteWindow.Note.IsOpen = false;
+            noteWindow.Note.vm.IsOpen = false;
             ListOfNoteWindows.Remove(noteWindow.Note.vm.Id);
         }
 

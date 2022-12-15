@@ -80,6 +80,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Command.cs" />
+    <Compile Include="Converters\OpenOrCloseIconConverter.cs" />
+    <Compile Include="Converters\OpenOrCloseTextConverter.cs" />
     <Compile Include="NoteCardModel.cs" />
     <Compile Include="SQLiteDatabaseAccess.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
@@ -161,6 +163,7 @@
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

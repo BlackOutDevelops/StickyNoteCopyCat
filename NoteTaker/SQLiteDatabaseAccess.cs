@@ -46,6 +46,14 @@ namespace NoteTaker
             }
         }
 
+        public static void DeleteNote(NoteCardModel note)
+        {
+            using (IDbConnection conn = new SQLiteConnection(LoadConnectionString()))
+            {
+                conn.Execute("DELETE FROM NoteCards WHERE ID=@ID", note);
+            }
+        }
+
         public static string LoadConnectionString(string id = "Default")
         {
             return ConfigurationManager.ConnectionStrings[id].ConnectionString;

@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -25,14 +26,13 @@ namespace NoteTaker
     {
         public NoteCardViewModel vm = new NoteCardViewModel();
 
-        public bool IsOpen = false;
-
         public NoteCard()
         {
             InitializeComponent();
             DataContext = vm;
             vm.UpdatedTime = DateTime.Now;
             vm.PropertyChanged += (e, v) => DisplayUpdatedTimeCorrectly();
+            NameScope.SetNameScope(NoteSettingsMenu, NameScope.GetNameScope(NoteCardUserControl));
         }
 
         private void DisplayUpdatedTimeCorrectly()
@@ -62,6 +62,17 @@ namespace NoteTaker
             NoteLastUpdated.Visibility = Visibility.Visible;
         }
 
+        private void HandleNoteSettingsButtonClick(object sender, RoutedEventArgs e)
+        {
+            NoteSettingsMenu.PlacementTarget = sender as Button;
+            NoteSettingsMenu.IsOpen = true;
+        }
 
+        private void HandleNoteSettingsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            var contextMenu = sender as ContextMenu;
+            Popup contextMenuParent = contextMenu.Parent as Popup;
+            contextMenuParent.PopupAnimation = PopupAnimation.None;
+        }
     }
 }
