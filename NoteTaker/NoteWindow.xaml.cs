@@ -133,6 +133,24 @@ namespace NoteTaker
             if (e.Key == Key.Space)
                 IsModified = true;
         }
+
+        private void HandleMouseEnterScrollBar(object sender, MouseEventArgs e)
+        {
+            var scrollBar = sender as ScrollBar;
+
+            NoteCardVM.ScrollViewerMargin = new Thickness(10, 0, 0, 1);
+            NoteCardVM.ScrollBarArrowButtonHeight = (int)SystemParameters.VerticalScrollBarButtonHeight;
+            NoteCardVM.TrackWidth = (int)SystemParameters.VerticalScrollBarWidth;
+            NoteCardVM.TrackMargin = new Thickness(0);
+        }
+
+        private void HandleMouseLeaveScrollBar(object sender, MouseEventArgs e)
+        {
+            NoteCardVM.ScrollViewerMargin = new Thickness(10, 0, -5, 1);
+            NoteCardVM.ScrollBarArrowButtonHeight = 0;
+            NoteCardVM.TrackWidth = 2;
+            NoteCardVM.TrackMargin = new Thickness(0, 14, 0, 14);
+        }
         #endregion
         #endregion
     }
