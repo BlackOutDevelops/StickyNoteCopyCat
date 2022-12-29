@@ -15,11 +15,14 @@
         <SolidColorBrush x:Key="Button.MouseOver.Border" Color="#8F444444"/>
         <SolidColorBrush x:Key="Button.Pressed.Background" Color="#FF444444"/>
         <SolidColorBrush x:Key="Button.Pressed.Border" Color="#FF444444"/>
-        <SolidColorBrush x:Key="Button.Disabled.Background" Color="#FFF4F4F4"/>
-        <SolidColorBrush x:Key="Button.Disabled.Border" Color="#FFADB2B5"/>
-        <SolidColorBrush x:Key="Button.Disabled.Foreground" Color="#FF838383"/>
-        <ControlTemplate x:Key="CloseButtonTemplate" TargetType="{x:Type ButtonBase}">
-            <Border x:Name="ButtonBorder" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True" CornerRadius="0, 7, 0, 0">
+        <SolidColorBrush x:Key="Button.Disabled.Background" Color="#FF444444"/>
+        <SolidColorBrush x:Key="Button.Disabled.Border" Color="#FF444444"/>
+        <SolidColorBrush x:Key="Button.Disabled.Foreground" Color="#FF444444"/>
+        <SolidColorBrush x:Key="Button.Enabled.Background" Color="#FF262626"/>
+        <SolidColorBrush x:Key="Button.Enabled.Border" Color="#FF262626"/>
+        <SolidColorBrush x:Key="Button.Enabled.Foreground" Color="#FFFFFFFF"/>
+        <ControlTemplate x:Key="TextCustomizationButtonTemplate" TargetType="{x:Type ButtonBase}">
+            <Border x:Name="ButtonBorder" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True" Width="32" Height="32">
                 <ContentPresenter x:Name="contentPresenter" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" 
                                   SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
             </Border>
@@ -35,103 +38,44 @@
                     <Setter Property="Background" TargetName="ButtonBorder" Value="{StaticResource Button.Pressed.Background}"/>
                     <Setter Property="BorderBrush" TargetName="ButtonBorder" Value="{StaticResource Button.Pressed.Border}"/>
                 </Trigger>
-                <Trigger Property="IsEnabled" Value="false">
+                <!--<Trigger Property="IsEnabled" Value="false">
                     <Setter Property="Background" TargetName="ButtonBorder" Value="{StaticResource Button.Disabled.Background}"/>
                     <Setter Property="BorderBrush" TargetName="ButtonBorder" Value="{StaticResource Button.Disabled.Border}"/>
                     <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{StaticResource Button.Disabled.Foreground}"/>
-                </Trigger>
+                </Trigger>-->
             </ControlTemplate.Triggers>
         </ControlTemplate>
-        <ControlTemplate x:Key="MaximizeButtonTemplate" TargetType="{x:Type ButtonBase}">
-            <Border x:Name="ButtonBorder" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True">
-                <ContentPresenter x:Name="contentPresenter" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" 
+        <Style x:Key="TextCustomizationButtonStyle" TargetType="{x:Type ToggleButton}">
+            <Style.Setters>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type ToggleButton}">
+                            <Border x:Name="ButtonBorder" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True" Width="32" Height="32">
+                                <ContentPresenter x:Name="contentPresenter" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" 
                                   SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-            </Border>
-            <ControlTemplate.Triggers>
-                <Trigger Property="Button.IsDefaulted" Value="true">
-                    <Setter Property="BorderBrush" TargetName="ButtonBorder" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
-                </Trigger>
-                <Trigger Property="IsMouseOver" Value="true">
-                    <Setter Property="Background" TargetName="ButtonBorder" Value="{StaticResource Button.MouseOver.Background}"/>
-                    <Setter Property="BorderBrush" TargetName="ButtonBorder" Value="{StaticResource Button.MouseOver.Border}"/>
-                </Trigger>
-                <Trigger Property="IsPressed" Value="true">
-                    <Setter Property="Background" TargetName="ButtonBorder" Value="{StaticResource Button.Pressed.Background}"/>
-                    <Setter Property="BorderBrush" TargetName="ButtonBorder" Value="{StaticResource Button.Pressed.Border}"/>
-                </Trigger>
-                <Trigger Property="IsEnabled" Value="false">
-                    <Setter Property="Background" TargetName="ButtonBorder" Value="{StaticResource Button.Disabled.Background}"/>
-                    <Setter Property="BorderBrush" TargetName="ButtonBorder" Value="{StaticResource Button.Disabled.Border}"/>
-                    <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{StaticResource Button.Disabled.Foreground}"/>
-                </Trigger>
-            </ControlTemplate.Triggers>
-        </ControlTemplate>
-        <ControlTemplate x:Key="AddButtonTemplate" TargetType="{x:Type ButtonBase}">
-            <Border x:Name="ButtonBorder" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True" CornerRadius="7, 0, 0, 0">
-                <ContentPresenter x:Name="contentPresenter" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" 
-                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-            </Border>
-            <ControlTemplate.Triggers>
-                <Trigger Property="Button.IsDefaulted" Value="true">
-                    <Setter Property="BorderBrush" TargetName="ButtonBorder" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
-                </Trigger>
-                <Trigger Property="IsMouseOver" Value="true">
-                    <Setter Property="Background" TargetName="ButtonBorder" Value="{StaticResource Button.MouseOver.Background}"/>
-                    <Setter Property="BorderBrush" TargetName="ButtonBorder" Value="{StaticResource Button.MouseOver.Border}"/>
-                </Trigger>
-                <Trigger Property="IsPressed" Value="true">
-                    <Setter Property="Background" TargetName="ButtonBorder" Value="{StaticResource Button.Pressed.Background}"/>
-                    <Setter Property="BorderBrush" TargetName="ButtonBorder" Value="{StaticResource Button.Pressed.Border}"/>
-                </Trigger>
-                <Trigger Property="IsEnabled" Value="false">
-                    <Setter Property="Background" TargetName="ButtonBorder" Value="{StaticResource Button.Disabled.Background}"/>
-                    <Setter Property="BorderBrush" TargetName="ButtonBorder" Value="{StaticResource Button.Disabled.Border}"/>
-                    <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{StaticResource Button.Disabled.Foreground}"/>
-                </Trigger>
-            </ControlTemplate.Triggers>
-        </ControlTemplate>
-        <Style x:Key="ThumbsStyle" TargetType="{x:Type Thumb}">
-            <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false"/>
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="Transparent"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type Thumb}">
-                        <Border Background="{TemplateBinding Background}" BorderBrush="Transparent" BorderThickness="{TemplateBinding BorderThickness}">
-                            <Grid>
-                                <Border Background="Transparent" BorderBrush="Transparent" BorderThickness="0,0,1,1"/>
-                                <Border Background="Transparent" BorderBrush="Transparent" BorderThickness="0,0,1,1" Margin="1"/>
-                                <Border Background="{TemplateBinding Background}" Margin="2"/>
-                            </Grid>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="Button.IsDefaulted" Value="true">
+                                    <Setter Property="BorderBrush" TargetName="ButtonBorder" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+                                </Trigger>
+                                <Trigger Property="IsMouseOver" Value="true">
+                                    <Setter Property="Background" TargetName="ButtonBorder" Value="{StaticResource Button.MouseOver.Background}"/>
+                                    <Setter Property="BorderBrush" TargetName="ButtonBorder" Value="{StaticResource Button.MouseOver.Border}"/>
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="true">
+                                    <Setter Property="Background" TargetName="ButtonBorder" Value="{StaticResource Button.Pressed.Background}"/>
+                                    <Setter Property="BorderBrush" TargetName="ButtonBorder" Value="{StaticResource Button.Pressed.Border}"/>
+                                </Trigger>   
+                                <Trigger Property="IsChecked" Value="true">
+                                    <Setter Property="Background" TargetName="ButtonBorder" Value="{StaticResource Button.Pressed.Background}"/>
+                                    <Setter Property="BorderBrush" TargetName="ButtonBorder" Value="{StaticResource Button.Pressed.Border}"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style.Setters>
         </Style>
-        <ControlTemplate x:Key="SearchBarButtonTemplate" TargetType="{x:Type ButtonBase}">
-            <Border x:Name="ButtonBorder" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True">
-                <ContentPresenter x:Name="contentPresenter" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" 
-                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-            </Border>
-            <ControlTemplate.Triggers>
-                <Trigger Property="Button.IsDefaulted" Value="true">
-                    <Setter Property="BorderBrush" TargetName="ButtonBorder" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
-                </Trigger>
-                <Trigger Property="IsMouseOver" Value="true">
-                    <Setter Property="Background" TargetName="ButtonBorder" Value="{StaticResource Button.MouseOver.Background}"/>
-                    <Setter Property="BorderBrush" TargetName="ButtonBorder" Value="{StaticResource Button.MouseOver.Border}"/>
-                </Trigger>
-                <Trigger Property="IsPressed" Value="true">
-                    <Setter Property="Background" TargetName="ButtonBorder" Value="{StaticResource Button.Pressed.Background}"/>
-                    <Setter Property="BorderBrush" TargetName="ButtonBorder" Value="{StaticResource Button.Pressed.Border}"/>
-                </Trigger>
-                <Trigger Property="IsEnabled" Value="false">
-                    <Setter Property="Background" TargetName="ButtonBorder" Value="{StaticResource Button.Disabled.Background}"/>
-                    <Setter Property="BorderBrush" TargetName="ButtonBorder" Value="{StaticResource Button.Disabled.Border}"/>
-                    <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{StaticResource Button.Disabled.Foreground}"/>
-                </Trigger>
-            </ControlTemplate.Triggers>
-        </ControlTemplate>
         <SolidColorBrush x:Key="ScrollBar.Static.Background" Color="Transparent"/>
         <SolidColorBrush x:Key="ScrollBar.Static.Border" Color="Transparent"/>
         <SolidColorBrush x:Key="ScrollBar.Static.Glyph" Color="White"/>
@@ -471,11 +415,78 @@
                 <local:ImageHolder x:Name="ImageCarousel" Grid.Row="0" Foreground="White" Background="#FF303030" LayoutUpdated="HandleImageHolderLayoutUpdated"/>
                 <RichTextBox Grid.Row="1" x:Name="NoteTextBox" AutoWordSelection="False" IsUndoEnabled="True" Foreground="White" Background="#FF303030" BorderThickness="0" Padding="10" VerticalScrollBarVisibility="Visible" FontSize="14" TextChanged="HandleTextChanged" PreviewTextInput="HandleTextInput" PreviewKeyDown="HandleKeyDown" Loaded="HandleTextBoxLoaded" SelectionChanged="HandleSelectionChanged" >
                     <RichTextBox.Resources>
-                    <Style TargetType="{x:Type ScrollViewer}" BasedOn="{StaticResource ScrollViewerStyle}">
-                        <Setter Property="Margin" Value="{Binding ScrollViewerMargin}"/>
-                    </Style>
-                </TextBox.Resources>
-            </TextBox>
+                        <Style TargetType="{x:Type ScrollViewer}" BasedOn="{StaticResource ScrollViewerStyle}">
+                            <Setter Property="Margin" Value="{Binding ScrollViewerMargin}"/>
+                        </Style>
+                        <Style TargetType="{x:Type Paragraph}">
+                            <Setter Property="Margin" Value="0"/>
+                        </Style>
+                        <Style TargetType="{x:Type List}">
+                            <Setter Property="Padding" Value="15, 0, 0, 0"/>
+                            <Setter Property="Margin" Value="0"/>
+
+                        </Style>
+                        <Style TargetType="{x:Type ListItem}">
+                            <Setter Property="Padding" Value="0"/>
+                            <Setter Property="Margin" Value="0"/>
+                        </Style>
+                    </RichTextBox.Resources>
+                </RichTextBox>
+                
+            </Grid>
+            <ToolBar Grid.Row="2" HorizontalAlignment="Left" Background="Transparent" Foreground="Transparent" ToolBarTray.IsLocked="True" Loaded="HandleToolBarLoaded">
+                <ToggleButton Style="{DynamicResource TextCustomizationButtonStyle}" Margin="2, 0, 0, 0" Focusable="False" Background="{DynamicResource Button.Enabled.Background}" Foreground="{DynamicResource Button.Enabled.Foreground}" BorderBrush="{DynamicResource Button.Enabled.Border}" IsChecked="{Binding IsBold, Mode=TwoWay}" Command="EditingCommands.ToggleBold">
+                    <TextBlock Text="B" FontSize="17" FontWeight="Bold"/>
+                </ToggleButton>
+                <ToggleButton Style="{DynamicResource TextCustomizationButtonStyle}" Margin="8, 0" Focusable="False" Background="{DynamicResource Button.Enabled.Background}" Foreground="{DynamicResource Button.Enabled.Foreground}" BorderBrush="{DynamicResource Button.Enabled.Border}" IsChecked="{Binding IsItalic, Mode=TwoWay}" Command="EditingCommands.ToggleItalic">
+                    <TextBlock Text="I" Margin="0, 1, 0, 0" FontSize="18" FontStyle="Italic" FontFamily="SimSun" />
+                </ToggleButton>
+                <ToggleButton Style="{DynamicResource TextCustomizationButtonStyle}" Margin="8, 0" Focusable="False" Background="{DynamicResource Button.Enabled.Background}" Foreground="{DynamicResource Button.Enabled.Foreground}" BorderBrush="{DynamicResource Button.Enabled.Border}" IsChecked="{Binding IsUnderline, Mode=TwoWay}" Command="EditingCommands.ToggleUnderline">
+                    <TextBlock Text="U" Margin="0, 1, 0, 0" FontSize="16" TextDecorations="Underline" FontFamily="Arial" />
+                </ToggleButton>
+                <ToggleButton Style="{DynamicResource TextCustomizationButtonStyle}" Margin="8, 0" Focusable="False" Background="{DynamicResource Button.Enabled.Background}" Foreground="{DynamicResource Button.Enabled.Foreground}" BorderBrush="{DynamicResource Button.Enabled.Border}" IsChecked="{Binding IsStrikethrough, Mode=TwoWay}" Click="HandleToggleStrikethroughButtonClick">
+                    <TextBlock Text="ab" Margin="0, 1, 0, 0" FontSize="18" TextDecorations="Strikethrough" FontFamily="Microsoft YaHei UI Light"/>
+                </ToggleButton>
+                <ToggleButton Style="{DynamicResource TextCustomizationButtonStyle}" ToolTip="Toggle Bullets" Margin="8, 0" Focusable="False" Background="{DynamicResource Button.Enabled.Background}" Foreground="{DynamicResource Button.Enabled.Foreground}" BorderBrush="{DynamicResource Button.Enabled.Border}" IsChecked="{Binding IsBullets, Mode=TwoWay}" Command="EditingCommands.ToggleBullets">
+                    <Path Stroke="{DynamicResource Button.Enabled.Foreground}" StrokeThickness="1">
+                        <Path.Data>
+                            <CombinedGeometry GeometryCombineMode="Union">
+                                <CombinedGeometry.Geometry1>
+                                    <PathGeometry>
+                                        <!--Line 1-->
+                                        <PathFigure StartPoint="0, 0">
+                                            <PolyLineSegment Points="0,1 1,1 1,0"/>
+                                        </PathFigure>
+                                        <PathFigure StartPoint="4, 0">
+                                            <PolyLineSegment Points="4,1 18,1 18,0"/>
+                                        </PathFigure>
+                                        <!--Line 2-->
+                                        <PathFigure StartPoint="0, 4">
+                                            <PolyLineSegment Points="0,5 1,5 1,4"/>
+                                        </PathFigure>
+                                        <PathFigure StartPoint="4, 4">
+                                            <PolyLineSegment Points="4,5 18,5 18,4"/>
+                                        </PathFigure>
+                                        <!--Line 3-->
+                                        <PathFigure StartPoint="0, 8">
+                                            <PolyLineSegment Points="0,9 1,9 1,8"/>
+                                        </PathFigure>
+                                        <PathFigure StartPoint="4, 8">
+                                            <PolyLineSegment Points="4,9 18,9 18,8"/>
+                                        </PathFigure>
+                                        <!--Line 4-->
+                                        <PathFigure StartPoint="0, 12">
+                                            <PolyLineSegment Points="0,13 1,13 1,12"/>
+                                        </PathFigure>
+                                        <PathFigure StartPoint="4, 12">
+                                            <PolyLineSegment Points="4,13 18,13 18,12"/>
+                                        </PathFigure>
+                                    </PathGeometry>
+                                </CombinedGeometry.Geometry1>
+                            </CombinedGeometry>
+                        </Path.Data>
+                    </Path>
+                </ToggleButton>
                 <Button Template="{DynamicResource TextCustomizationButtonTemplate}" Margin="8, 0" Focusable="False" Background="{DynamicResource Button.Enabled.Background}" Foreground="{DynamicResource Button.Enabled.Foreground}" BorderBrush="{DynamicResource Button.Enabled.Border}" Click="HandleInsertImageButtonClick">
                     <Path Stroke="{DynamicResource Button.Enabled.Foreground}" StrokeThickness="1.5">
                         <Path.Data>

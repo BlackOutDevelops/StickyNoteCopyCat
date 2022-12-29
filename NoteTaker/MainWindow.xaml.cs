@@ -102,6 +102,8 @@ namespace NoteTaker
             {
                 existingNote = new NoteWindow(noteCard, true, true);
                 existingNote.Show();
+                existingNote.Left = Left + Width;
+                existingNote.Top = Top + 35*ListOfNoteWindows.Count;
 
                 noteCard.vm.IsOpen = true;
                 ListOfNoteWindows.Add(noteCard.vm.Id, existingNote);
@@ -158,6 +160,7 @@ namespace NoteTaker
             SearchBox.Foreground = Brushes.DarkGray;
         }
         #endregion      
+
         #region TextBox EventHandlers
         private void HandleTextBoxLostFocus(object sender, RoutedEventArgs e)
         {

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Documents;
 using System.Windows.Input;
 
 namespace NoteTaker.ViewModels
@@ -123,6 +124,76 @@ namespace NoteTaker.ViewModels
             }
         }
 
+        private bool _isBold;
+        public bool IsBold
+        {
+            get { return _isBold; }
+            set
+            {
+                if (value != _isBold)
+                {
+                    _isBold = value;
+                    FirePropertyChanged(nameof(IsBold));
+                }
+            }
+        }
+
+        private bool _isItalic;
+        public bool IsItalic
+        {
+            get { return _isItalic; }
+            set
+            {
+                if (value != _isItalic)
+                {
+                    _isItalic = value;
+                    FirePropertyChanged(nameof(IsItalic));
+                }
+            }
+        }
+
+        private bool _isStrikethrough;
+        public bool IsStrikethrough
+        {
+            get { return _isStrikethrough; }
+            set
+            {
+                if (value != _isStrikethrough)
+                {
+                    _isStrikethrough = value;
+                    FirePropertyChanged(nameof(IsStrikethrough));
+                }
+            }
+        }
+
+        private bool _isUnderline;
+        public bool IsUnderline
+        {
+            get { return _isUnderline; }
+            set
+            {
+                if (value != _isUnderline)
+                {
+                    _isUnderline = value;
+                    FirePropertyChanged(nameof(IsUnderline));
+                }
+            }
+        }
+
+        private bool _isBullets;
+        public bool IsBullets
+        {
+            get { return _isBullets; }
+            set
+            {
+                if (value != _isBullets)
+                {
+                    _isBullets = value;
+                    FirePropertyChanged(nameof(IsBullets));
+                }
+            }
+        }
+
         public ICommand DeleteNoteCommand { get; set; }
         public ICommand OpenOrCloseNoteCommand { get; set; }
 
@@ -130,6 +201,11 @@ namespace NoteTaker.ViewModels
         {
             DeleteNoteCommand = new Command(DeleteNoteCommandExecute, DeleteNoteCommandCanExecute);
             OpenOrCloseNoteCommand = new Command(OpenOrCloseNoteCommandExecute, OpenOrCloseNoteCommandCanExecute);
+        }
+
+        private bool ToggleBulletsCanExecute()
+        {
+            return true;
         }
 
         private bool OpenOrCloseNoteCommandCanExecute(object parameter)

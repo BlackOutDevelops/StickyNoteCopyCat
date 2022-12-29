@@ -45,7 +45,7 @@ namespace NoteTaker
             {
                 string monthAndDay = vm.UpdatedTime.GetDateTimeFormats('M')[0];
                 NoteLastUpdated.Content = monthAndDay.Substring(0, 3) + " " + monthAndDay.Split()[1];
-            }
+            }    
         }
 
         private void HandleMouseEntered(object sender, MouseEventArgs e)

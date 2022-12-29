@@ -87,22 +87,63 @@ namespace NoteTaker
             }
         }
         #endregion
+
         #region TextBox EventHandlers
+        private void HandleSelectionChanged(object sender, RoutedEventArgs e)
+        {
+            TextSelection selection = NoteTextBox.Selection;
+            TextDecorationCollection textDecorationCollection = selection.GetPropertyValue(Inline.TextDecorationsProperty) as TextDecorationCollection;
+            NoteCardVM.IsStrikethrough = false;
+            NoteCardVM.IsUnderline = false;
+            NoteCardVM.IsBold = false;
+            NoteCardVM.IsItalic = false;
+            NoteCardVM.IsBullets = false;
+
+            if (textDecorationCollection != null)
+                foreach (TextDecoration td in textDecorationCollection)
+                {
+                    if (td.Location == TextDecorationLocation.Underline)
+                        NoteCardVM.IsUnderline = true;
+                    if (td.Location == TextDecorationLocation.Strikethrough)
+                        NoteCardVM.IsStrikethrough = true;
+                }
+
+            if (selection.GetPropertyValue(FontWeightProperty).Equals(FontWeights.Bold))
+                NoteCardVM.IsBold = true;
+            if (selection.GetPropertyValue(FontStyleProperty).Equals(FontStyles.Italic))
+                NoteCardVM.IsItalic = true;
+
+            try
+            {
+                Run selectionRun = selection.Start.GetLineStartPosition(0).GetAdjacentElement(LogicalDirection.Forward) as Run;
+                Paragraph selectionParagraph = selectionRun.Parent as Paragraph;
+                ListItem selectionListItem = selectionParagraph.Parent as ListItem;
+
+                if (selectionListItem != null)
+                    NoteCardVM.IsBullets = true;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.ToString());
+            }
+        }
+
         // COULD BE OPTIMIZED
         private void HandleTextChanged(object sender, TextChangedEventArgs e)
         {
-            var noteTextBox = sender as TextBox;
+            var noteTextBox = sender as RichTextBox;
+            TextRange noteTextBoxRange = new TextRange(noteTextBox.Document.ContentStart, noteTextBox.Document.ContentEnd);
 
-            // Work On
-            if (noteTextBox.Text.Equals("Take a note...") && !IsModified)
+            //Work On
+            if (noteTextBoxRange.Equals("Take a note...") && !IsModified)
             {
                 noteTextBox.Foreground = Brushes.Gray;
             }
 
-            if (NoteCardVM.NoteString.ToString() != noteTextBox.Text)
+            if (NoteCardVM.NoteString.ToString() != noteTextBoxRange.Text)
             {
                 // Update UI
-                NoteCardVM.NoteString = noteTextBox.Text;
+                NoteCardVM.NoteString = noteTextBoxRange.Text;
                 NoteCardVM.FirePropertyChanged(nameof(NoteCardVM.NoteString));
                 NoteCardVM.UpdatedTime = DateTime.Now;
                 ((MainWindow)App.Current.MainWindow).OrderNoteCards();
@@ -125,10 +166,19 @@ namespace NoteTaker
                 }
             }
         }
-        
+
         private void HandleTextInput(object sender, TextCompositionEventArgs e)
         {
             IsModified = true;
+        }
+
+        private void HandleTextBoxLoaded(object sender, RoutedEventArgs e)
+        {
+            NoteTextBox.Focus();
+            string[] noteStringParagraphSplit = NoteCardVM.NoteString.Trim().Split(new string[] { "\n", "\r\n" }, StringSplitOptions.None);
+            NoteTextBox.Document = new FlowDocument();
+            foreach (string s in noteStringParagraphSplit)
+                NoteTextBox.Document.Blocks.Add((new Paragraph(new Run(s)))); 
         }
 
         private void HandleKeyDown(object sender, KeyEventArgs e)
@@ -155,6 +205,50 @@ namespace NoteTaker
             NoteCardVM.TrackMargin = new Thickness(0, 14, 0, 14);
         }
         #endregion
+
+        #region TextCustomization
+        // Fix all to not set property to whole paragraph
+        private void HandleToggleStrikethroughButtonClick(object sender, RoutedEventArgs e)
+        {
+            TextSelection selection = NoteTextBox.Selection;
+            TextDecorationCollection textDecorationCollection = selection.GetPropertyValue(Inline.TextDecorationsProperty) as TextDecorationCollection;
+            bool IsStrikethrough = false,
+                 IsUnderline = false;
+
+            foreach(TextDecoration td in textDecorationCollection)
+            {
+                if (td.Location == TextDecorationLocation.Underline)
+                    IsUnderline = true;
+                if (td.Location == TextDecorationLocation.Strikethrough)
+                    IsStrikethrough = true;
+            }
+            
+            if (IsStrikethrough && IsUnderline)
+            {
+                selection.ApplyPropertyValue(Inline.TextDecorationsProperty, TextDecorations.Underline);
+            }
+            else if (IsStrikethrough)
+                selection.ApplyPropertyValue(Inline.TextDecorationsProperty, null);
+            else if (IsUnderline)
+            {
+                selection.ApplyPropertyValue(Inline.TextDecorationsProperty, new TextDecorationCollection(Enumerable.Concat(TextDecorations.Strikethrough, TextDecorations.Underline)));
+            }
+            else if (selection.IsEmpty)
+                return;
+            else
+                selection.ApplyPropertyValue(Inline.TextDecorationsProperty, TextDecorations.Strikethrough);
+        }
+
+        private void HandleToolBarLoaded(object sender, RoutedEventArgs e)
+        {
+            ToolBar toolBar = sender as ToolBar;
+            ToggleButton toggleButton = toolBar.Template.FindName("OverflowButton", toolBar) as ToggleButton;
+            if (toggleButton != null)
+            {
+                toggleButton.Visibility = System.Windows.Visibility.Collapsed;
+            }
+        }
+
         private void HandleInsertImageButtonClick(object sender, RoutedEventArgs e)
         {
             OpenFileDialog open = new OpenFileDialog();

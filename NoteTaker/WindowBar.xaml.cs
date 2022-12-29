@@ -130,6 +130,11 @@ namespace NoteTaker
             NoteCard noteCard = new NoteCard();
             NoteWindow newNote = new NoteWindow(noteCard, false, false);
             newNote.Show();
+            ((MainWindow)App.Current.MainWindow).ListOfNoteWindows.Add(newNote.Note.vm.Id ,newNote);
+            newNote.WindowStartupLocation = WindowStartupLocation.Manual;
+            newNote.Left = CurrentWindow.Left + CurrentWindow.Width;
+            // Fix this
+            newNote.Top = CurrentWindow.Top + 35 * ((MainWindow)App.Current.MainWindow).ListOfNoteWindows.Count - 35;
             newNote.Closed += ((MainWindow)App.Current.MainWindow).HandleNoteWindowClosed;
             noteCard.Padding = new Thickness(0, 0, 0, 7);
             noteCard.MouseDoubleClick += ((MainWindow)App.Current.MainWindow).HandleNoteCardMouseDoubleClick;
