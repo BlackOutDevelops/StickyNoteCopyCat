@@ -263,7 +263,6 @@ namespace NoteTaker
             foreach(Stream file in files)
             {
                 System.Drawing.Image image = System.Drawing.Image.FromFile(open.FileNames[fileNumber]);
-                Debug.WriteLine(image.RawFormat);
                 ImageButton imageButton = new ImageButton(image);
                 ImageCarousel.ImageStackPanel.Children.Add(imageButton);
                 fileNumber++;
