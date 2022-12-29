@@ -20,6 +20,9 @@ using System.Windows.Markup;
 using System.Data.SqlClient;
 using System.Data.SQLite;
 using System.Diagnostics;
+using System.IO;
+using Microsoft.Win32;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace NoteTaker
 {
@@ -152,6 +155,35 @@ namespace NoteTaker
             NoteCardVM.TrackMargin = new Thickness(0, 14, 0, 14);
         }
         #endregion
+        private void HandleInsertImageButtonClick(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog open = new OpenFileDialog();
+            open.InitialDirectory = Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\Pictures");
+            open.Multiselect = true;
+            open.AddExtension = true;
+            open.Filter = "JPEG and PNG Files|*.jpg;*.png;";
+            open.ShowDialog();
+            Stream[] files = open.OpenFiles();
+            int fileNumber = 0;
+
+            foreach(Stream file in files)
+            {
+                System.Drawing.Image image = System.Drawing.Image.FromFile(open.FileNames[fileNumber]);
+                Debug.WriteLine(image.RawFormat);
+                ImageButton imageButton = new ImageButton(image);
+                ImageCarousel.ImageStackPanel.Children.Add(imageButton);
+                fileNumber++;
+            }
+
+            ImageRow.Height = new GridLength(4, GridUnitType.Star);
+        }
+        #endregion
+
+        private void HandleImageHolderLayoutUpdated(object sender, EventArgs e)
+        {
+            if (ImageCarousel.ImageStackPanel.Children.Count == 0)
+                ImageRow.Height = new GridLength(0);
+        }
         #endregion
     }
 }
