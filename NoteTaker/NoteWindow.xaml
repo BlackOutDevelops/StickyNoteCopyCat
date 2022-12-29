@@ -413,7 +413,7 @@
                 </Grid.RowDefinitions>
                 
                 <local:ImageHolder x:Name="ImageCarousel" Grid.Row="0" Foreground="White" Background="#FF303030" LayoutUpdated="HandleImageHolderLayoutUpdated"/>
-                <RichTextBox Grid.Row="1" x:Name="NoteTextBox" AutoWordSelection="False" IsUndoEnabled="True" Foreground="White" Background="#FF303030" BorderThickness="0" Padding="10" VerticalScrollBarVisibility="Visible" FontSize="14" TextChanged="HandleTextChanged" PreviewTextInput="HandleTextInput" PreviewKeyDown="HandleKeyDown" Loaded="HandleTextBoxLoaded" SelectionChanged="HandleSelectionChanged" >
+                <RichTextBox Grid.Row="1" x:Name="NoteTextBox" AutoWordSelection="False" IsUndoEnabled="True" Foreground="White" Background="#FF303030" BorderThickness="0" VerticalScrollBarVisibility="Visible" FontSize="14" TextChanged="HandleTextChanged" PreviewTextInput="HandleTextInput" PreviewKeyDown="HandleKeyDown" Loaded="HandleTextBoxLoaded" SelectionChanged="HandleSelectionChanged" >
                     <RichTextBox.Resources>
                         <Style TargetType="{x:Type ScrollViewer}" BasedOn="{StaticResource ScrollViewerStyle}">
                             <Setter Property="Margin" Value="{Binding ScrollViewerMargin}"/>
