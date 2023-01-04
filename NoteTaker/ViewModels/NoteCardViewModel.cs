@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -255,13 +256,31 @@ namespace NoteTaker.ViewModels
                 UpdatedTime = UpdatedTime.ToString()
             };
 
+            // Remove from database
             SQLiteDatabaseAccess.DeleteNote(noteToDeleteInDatabase);
+
+            // Remove all images associated with NoteCard
             string[] imagePaths = noteCard.vm.ImagePaths.ToString().Split(new string[] { "[", "][", "]" }, StringSplitOptions.RemoveEmptyEntries);
             foreach (string imagePath in imagePaths) 
             { 
                 File.Delete(imagePath);
             }
+
+            // Remove reference of NoteCard
             ((MainWindow)Application.Current.MainWindow).mwvm.NoteCards.Remove(noteCard);
+            
+            // If NoteWindow is open, close it
+            try
+            {
+                NoteWindow openWindow;
+                ((MainWindow)Application.Current.MainWindow).ListOfNoteWindows.TryGetValue(noteCard.vm.Id, out openWindow);
+                openWindow.Close();
+                ((MainWindow)Application.Current.MainWindow).ListOfNoteWindows.Remove(noteCard.vm.Id);
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine(ex);
+            } 
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
