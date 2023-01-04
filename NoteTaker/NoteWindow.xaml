@@ -424,7 +424,6 @@
                         <Style TargetType="{x:Type List}">
                             <Setter Property="Padding" Value="15, 0, 0, 0"/>
                             <Setter Property="Margin" Value="0"/>
-
                         </Style>
                         <Style TargetType="{x:Type ListItem}">
                             <Setter Property="Padding" Value="0"/>

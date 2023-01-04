@@ -23,6 +23,8 @@ using System.Diagnostics;
 using System.IO;
 using Microsoft.Win32;
 using static System.Net.Mime.MediaTypeNames;
+using System.Drawing.Imaging;
+using System.Threading;
 
 namespace NoteTaker
 {
@@ -132,25 +134,35 @@ namespace NoteTaker
         private void HandleTextChanged(object sender, TextChangedEventArgs e)
         {
             var noteTextBox = sender as RichTextBox;
-            TextRange noteTextBoxRange = new TextRange(noteTextBox.Document.ContentStart, noteTextBox.Document.ContentEnd);
+            TextRange noteWindowTextBoxRange = new TextRange(noteTextBox.Document.ContentStart, noteTextBox.Document.ContentEnd);
+            TextRange noteCardTextBoxRange = new TextRange(Note.NoteCardText.Document.ContentStart, Note.NoteCardText.Document.ContentEnd);
 
             //Work On
-            if (noteTextBoxRange.Equals("Take a note...") && !IsModified)
+            if (noteWindowTextBoxRange.Equals("Take a note...") && !IsModified)
             {
                 noteTextBox.Foreground = Brushes.Gray;
             }
 
-            if (NoteCardVM.NoteString.ToString() != noteTextBoxRange.Text)
+            if (noteCardTextBoxRange.Text != noteWindowTextBoxRange.Text)
             {
                 // Update UI
-                NoteCardVM.NoteString = noteTextBoxRange.Text;
-                NoteCardVM.FirePropertyChanged(nameof(NoteCardVM.NoteString));
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    noteWindowTextBoxRange.Save(ms, DataFormats.Rtf, true);
+                    noteCardTextBoxRange.Load(ms, DataFormats.Rtf);
+                }
                 NoteCardVM.UpdatedTime = DateTime.Now;
                 ((MainWindow)App.Current.MainWindow).OrderNoteCards();
 
 
                 // Update model to send to database
-                NoteCardM.Note = NoteCardVM.NoteString;
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    noteWindowTextBoxRange.Save(ms, DataFormats.Rtf, true);
+                    NoteCardM.Note = Encoding.ASCII.GetString(ms.ToArray());
+                }
+
+                //NoteCardM.Note = NoteCardVM.NoteString;
                 NoteCardM.UpdatedTime = NoteCardVM.UpdatedTime.ToString();
 
                 if (!IsInDatabase)
@@ -174,11 +186,30 @@ namespace NoteTaker
 
         private void HandleTextBoxLoaded(object sender, RoutedEventArgs e)
         {
+            var noteTextBox = sender as RichTextBox;
+            TextRange noteWindowTextBoxRange = new TextRange(noteTextBox.Document.ContentStart, noteTextBox.Document.ContentEnd);
+            TextRange noteCardTextBoxRange = new TextRange(Note.NoteCardText.Document.ContentStart, Note.NoteCardText.Document.ContentEnd);
+
+            // Handle Text Loading
+            using (MemoryStream ms = new MemoryStream())
+            {
+                noteCardTextBoxRange.Save(ms, DataFormats.Rtf);
+                noteWindowTextBoxRange.Load(ms, DataFormats.Rtf);
+            }
+
+            // Handle Image Loading
+            if (Note.NoteCardImageCarousel.ImageStackPanel.Children.Count > 0)
+            {
+                foreach (ImageButton imageButton in Note.NoteCardImageCarousel.ImageStackPanel.Children)
+                {
+                    ImageButton noteWindowImageButton = new ImageButton(imageButton.ButtonImage, imageButton.ImageLocation);
+                    noteWindowImageButton.DeleteItem.PreviewMouseLeftButtonUp += imageButton.HandleDeleteItemMouseLeftButtonUp;
+                    ImageCarousel.ImageStackPanel.Children.Add(noteWindowImageButton);
+                }
+                ImageRow.Height = new GridLength(4, GridUnitType.Star);
+            }
+
             NoteTextBox.Focus();
-            string[] noteStringParagraphSplit = NoteCardVM.NoteString.Trim().Split(new string[] { "\n", "\r\n" }, StringSplitOptions.None);
-            NoteTextBox.Document = new FlowDocument();
-            foreach (string s in noteStringParagraphSplit)
-                NoteTextBox.Document.Blocks.Add((new Paragraph(new Run(s)))); 
         }
 
         private void HandleKeyDown(object sender, KeyEventArgs e)
@@ -263,19 +294,107 @@ namespace NoteTaker
             foreach(Stream file in files)
             {
                 System.Drawing.Image image = System.Drawing.Image.FromFile(open.FileNames[fileNumber]);
-                ImageButton imageButton = new ImageButton(image);
-                ImageCarousel.ImageStackPanel.Children.Add(imageButton);
+                string imageFileLocation;
+                
+                try
+                {
+                    if (Directory.Exists("Media"))
+                        throw new Exception("Media directory already exists!");
+
+                    Directory.CreateDirectory("Media");
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
+                finally
+                {
+                    imageFileLocation = "Media\\" + DateTime.Now.Ticks.ToString() + GetFileExtensionFromRawFormat(image.RawFormat);
+                    image.Save(imageFileLocation);
+                    NoteCardVM.ImagePaths.Append("[" + imageFileLocation + "]");
+                }
+
+                ImageButton noteCardImageButton = new ImageButton(image, imageFileLocation);
+                noteCardImageButton.IsEnabled = false;
+                ImageButton noteWindowImageButton = new ImageButton(image, imageFileLocation);
+                noteWindowImageButton.DeleteItem.PreviewMouseLeftButtonUp += noteCardImageButton.HandleDeleteItemMouseLeftButtonUp;
+                noteWindowImageButton.DeleteItem.PreviewMouseLeftButtonUp += HandleDeleteImageButton;
+                Note.NoteCardImageCarousel.ImageStackPanel.Children.Add(noteCardImageButton);
+                ImageCarousel.ImageStackPanel.Children.Add(noteWindowImageButton);
                 fileNumber++;
+
+                
+
+
+                NoteCardVM.UpdatedTime = DateTime.Now;
+                ((MainWindow)App.Current.MainWindow).OrderNoteCards();
+                NoteCardM.UpdatedTime = NoteCardVM.UpdatedTime.ToString();
+                if (!IsInDatabase)
+                {
+                    SQLiteDatabaseAccess.SaveImageToNewNote(NoteCardM);
+                    NoteCardVM.Id = NoteCardM.Id = SQLiteDatabaseAccess.LoadRecentNoteDatabaseID();
+                    NoteCardM.ImagePaths = NoteCardVM.ImagePaths.ToString();
+                    IsInDatabase = true;
+                }
+                else
+                {
+                    NoteCardM.Id = NoteCardVM.Id;
+                    NoteCardM.ImagePaths = NoteCardVM.ImagePaths.ToString();
+                    SQLiteDatabaseAccess.SaveImageToCurrentNote(NoteCardM);
+                }
             }
 
+            Note.ImageRow.Height = new GridLength(100);
+            Note.NoteCardText.Padding = new Thickness(10, 10, 10, 20);
             ImageRow.Height = new GridLength(4, GridUnitType.Star);
         }
         #endregion
+
+        private string GetFileExtensionFromRawFormat(ImageFormat rawFormat)
+        {
+            if (rawFormat.Guid == ImageFormat.Jpeg.Guid)
+                return ".jpg";
+            else if (rawFormat.Guid == ImageFormat.Png.Guid)
+                return ".png";
+
+            return "Unsupported File";
+        }
 
         private void HandleImageHolderLayoutUpdated(object sender, EventArgs e)
         {
             if (ImageCarousel.ImageStackPanel.Children.Count == 0)
                 ImageRow.Height = new GridLength(0);
+
+            // This is slow, optimize this. Get children subscribed a better way.
+            foreach (ImageButton imageButton in ImageCarousel.ImageStackPanel.Children)
+            {
+                imageButton.DeleteItem.PreviewMouseLeftButtonUp += HandleDeleteImageButton;
+            }
+        }
+
+        private void HandleDeleteImageButton(object sender, RoutedEventArgs e)
+        {
+            MenuItem deleteMenuItem = sender as MenuItem;
+
+            if (deleteMenuItem != null)
+            {
+                DependencyObject parent = deleteMenuItem.Parent;
+                while (!(parent is ContextMenu))
+                {
+                    parent = VisualTreeHelper.GetParent(deleteMenuItem);
+                }
+
+                if (parent is ContextMenu)
+                {
+                    ContextMenu imageButtonContextMenu = parent as ContextMenu;
+                    ImageButton imageButton = imageButtonContextMenu.PlacementTarget as ImageButton;
+                    Note.vm.ImagePaths.Replace("[" + imageButton.ImageLocation + "]", "");
+                    NoteCardM.Id = NoteCardVM.Id;
+                    NoteCardM.ImagePaths = NoteCardVM.ImagePaths.ToString();
+                    SQLiteDatabaseAccess.SaveImageToCurrentNote(NoteCardM);
+                }
+                    
+            }
         }
         #endregion
     }

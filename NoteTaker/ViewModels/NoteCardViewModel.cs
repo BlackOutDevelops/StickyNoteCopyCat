@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -82,16 +83,16 @@ namespace NoteTaker.ViewModels
             }
         }
 
-        private string _noteString = "Take a note...";
-        public string NoteString
+        private StringBuilder _imagePaths = new StringBuilder();
+        public StringBuilder ImagePaths
         {
-            get { return _noteString; }
+            get { return _imagePaths; }
             set
             {
-                if (value != _noteString)
+                if (value != _imagePaths)
                 {
-                    _noteString = value;
-                    FirePropertyChanged(nameof(NoteString));
+                    _imagePaths = value;
+                    FirePropertyChanged(nameof(ImagePaths));
                 }
             }
         }
@@ -251,11 +252,15 @@ namespace NoteTaker.ViewModels
             NoteCardModel noteToDeleteInDatabase = new NoteCardModel()
             {
                 Id = Id,
-                Note = NoteString.ToString(),
                 UpdatedTime = UpdatedTime.ToString()
             };
 
             SQLiteDatabaseAccess.DeleteNote(noteToDeleteInDatabase);
+            string[] imagePaths = noteCard.vm.ImagePaths.ToString().Split(new string[] { "[", "][", "]" }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (string imagePath in imagePaths) 
+            { 
+                File.Delete(imagePath);
+            }
             ((MainWindow)Application.Current.MainWindow).mwvm.NoteCards.Remove(noteCard);
         }
 

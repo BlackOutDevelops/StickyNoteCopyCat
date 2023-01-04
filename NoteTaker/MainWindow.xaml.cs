@@ -5,9 +5,12 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -15,6 +18,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
+using System.Windows.Forms.VisualStyles;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Effects;
@@ -34,7 +38,7 @@ namespace NoteTaker
                     IsWidthBackToMinWidth,
                     IsUsed,
                     IsSettingPlaceHolder;
-        private List<NoteCardModel> AllNotes;
+        private List<NoteCardModel> NotesLoadedFromDatabase;
 
         public MainWindowViewModel mwvm = new MainWindowViewModel();
 
@@ -45,8 +49,8 @@ namespace NoteTaker
             InitializeComponent();
             DataContext = mwvm;
             HandleWindowStateChanged(this, EventArgs.Empty);
-            AllNotes = SQLiteDatabaseAccess.LoadNotes();
-            DisplayAllNotesFromDatabase(AllNotes);
+            NotesLoadedFromDatabase = SQLiteDatabaseAccess.LoadNotes();
+            DisplayAllNotesFromDatabase(NotesLoadedFromDatabase);
         }
 
         #region Methods
@@ -54,13 +58,37 @@ namespace NoteTaker
         private void DisplayAllNotesFromDatabase(List<NoteCardModel> allNotes)
         {
             // Descending order - Flip to have ascending order (x.UpdatedTime.CompareTo(y.UpdatedTime))
-            AllNotes.Sort((x, y) => y.UpdatedTime.CompareTo(x.UpdatedTime));
+            NotesLoadedFromDatabase.Sort((x, y) => y.UpdatedTime.CompareTo(x.UpdatedTime));
             foreach (NoteCardModel noteCard in allNotes)
             {
                 NoteCard note = new NoteCard();
                 note.vm.Id = noteCard.Id;
-                note.vm.NoteString = noteCard.Note;
                 note.vm.UpdatedTime = DateTime.ParseExact(noteCard.UpdatedTime, "M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
+                note.vm.ImagePaths.Append(noteCard.ImagePaths);
+
+                // Handle RTF formatting
+                TextRange tr = new TextRange(note.NoteCardText.Document.ContentStart, note.NoteCardText.Document.ContentEnd);
+                byte[] rtfByteArray = Encoding.ASCII.GetBytes(noteCard.Note);
+                using (MemoryStream ms = new MemoryStream(rtfByteArray))
+                {
+                    tr.Load(ms, DataFormats.Rtf);
+                }
+
+                // Handle Images
+                if (noteCard.ImagePaths != null)
+                {
+                    List<string> imageFileLocations = noteCard.ImagePaths.Split(new string[] { "[", "][", "]" }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                    foreach (string fileLocation in imageFileLocations)
+                    {
+                        System.Drawing.Image image = System.Drawing.Image.FromFile(fileLocation);
+                        ImageButton imageButton = new ImageButton(image, fileLocation);
+                        imageButton.IsEnabled = false;
+                        note.NoteCardImageCarousel.ImageStackPanel.Children.Add(imageButton);
+                        note.NoteCardImageButton = imageButton;
+                    }
+                    note.ImageRow.Height = new GridLength(100);
+                }
+                
                 note.Padding = new Thickness(0, 0, 0, 7);
                 note.MouseDoubleClick += HandleNoteCardMouseDoubleClick;
                 mwvm.NoteCards.Add(note);
@@ -245,45 +273,49 @@ namespace NoteTaker
             if (mwvm.NoteCards == null)
                 return;
 
-            // SEARCH WORKS - LOOKS TERRIBLE, OPTIMIZE AND CLEAN UP
             var cardEnumerator = mwvm.NoteCards.GetEnumerator();
             if (IsUsed && !IsSettingPlaceHolder && searchBox.Text != "")
             {
                 while (cardEnumerator.MoveNext())
                 {
-                    List<int> listOfIndexes = new List<int>();
+                    List<TextRange> textRanges = new List<TextRange>();
                     NoteCard currentCard = cardEnumerator.Current as NoteCard;
-                    if (!currentCard.vm.NoteString.ToString().ToLower().Contains(searchBox.Text.ToLower()))
+
+                    // Reset card to original appearance
+                    currentCard.NoteCardText.SelectAll();
+                    currentCard.NoteCardText.Selection.ApplyPropertyValue(TextElement.BackgroundProperty, new SolidColorBrush(Colors.Transparent));
+                    currentCard.NoteCardText.Selection.ApplyPropertyValue(TextElement.ForegroundProperty, new SolidColorBrush(Colors.WhiteSmoke));
+
+                    int numberOfCharacters = currentCard.NoteCardText.Selection.Text.Length;
+                    if (!currentCard.NoteCardText.Selection.Text.ToString().ToLower().Contains(searchBox.Text.ToLower()))
                         currentCard.Visibility = Visibility.Collapsed;
                     else
                     {
                         currentCard.Visibility = Visibility.Visible;
 
-                        for (int index = 0; index < currentCard.NoteCardText.Text.Length; index += searchBox.Text.Length)
+                        TextPointer pointer = currentCard.NoteCardText.Document.ContentStart;
+                        Regex searchBoxText = new Regex(searchBox.Text, RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace);
+                        while (pointer != null)
                         {
-                            index = currentCard.NoteCardText.Text.ToLower().IndexOf(searchBox.Text.ToLower(), index);
-                            if (index == -1)
-                                break;
-                            listOfIndexes.Add(index);
+                            if (pointer.GetPointerContext(LogicalDirection.Forward) == TextPointerContext.Text)
+                            {
+                                string run = pointer.GetTextInRun(LogicalDirection.Forward);
+                                var matches = searchBoxText.Matches(run);
+
+                                foreach (Match match in matches)
+                                {
+                                    TextPointer start = pointer.GetPositionAtOffset(match.Index);
+                                    TextPointer end = start.GetPositionAtOffset(match.Length);
+                                    textRanges.Add(new TextRange(start, end));
+                                }
+                            }
+                            pointer = pointer.GetNextContextPosition(LogicalDirection.Forward);
                         }
 
-                        string noteCardTextBeforeUpdate = currentCard.NoteCardText.Text;
-                        int numberOfCharacters = currentCard.NoteCardText.Text.Length;
-                        currentCard.NoteCardText.Text = currentCard.NoteCardText.Text.Remove(0, currentCard.NoteCardText.Text.Length);
-                        for (int i = 0; i < numberOfCharacters; i++)
+                        foreach (TextRange range in textRanges)
                         {
-                            if (listOfIndexes.Contains(i))
-                            {
-                                currentCard.NoteCardText.Inlines.Add(new Run()
-                                {
-                                    Text = noteCardTextBeforeUpdate.Substring(i, searchBox.Text.Length),
-                                    Background = Brushes.Yellow,
-                                    Foreground = Brushes.Black
-                                });
-                                i += searchBox.Text.Length - 1;
-                            }
-                            else
-                                currentCard.NoteCardText.Inlines.Add(new Run(noteCardTextBeforeUpdate[i].ToString()));
+                            range.ApplyPropertyValue(TextElement.BackgroundProperty, new SolidColorBrush(Colors.Yellow));
+                            range.ApplyPropertyValue(TextElement.ForegroundProperty, new SolidColorBrush(Colors.Black));
                         }
                     }
                 }
@@ -294,13 +326,11 @@ namespace NoteTaker
                 {
                     NoteCard currentCard = cardEnumerator.Current as NoteCard;
                     currentCard.Visibility = Visibility.Visible;
-                    Binding textBlockBinding = new Binding();
-                    textBlockBinding.Source = currentCard.vm;
-                    textBlockBinding.Path = new PropertyPath(nameof(currentCard.vm.NoteString));
-                    textBlockBinding.Mode = BindingMode.TwoWay;
-                    textBlockBinding.UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged;
-                    currentCard.NoteCardText.SetBinding(TextBlock.TextProperty, textBlockBinding);
-                }    
+                    currentCard.NoteCardText.SelectAll();
+                    currentCard.NoteCardText.Selection.ApplyPropertyValue(TextElement.BackgroundProperty, new SolidColorBrush(Colors.Transparent));
+                    currentCard.NoteCardText.Selection.ApplyPropertyValue(TextElement.ForegroundProperty, new SolidColorBrush(Colors.WhiteSmoke));
+                    currentCard.NoteCardText.Selection.Select(currentCard.NoteCardText.Document.ContentEnd, currentCard.NoteCardText.Document.ContentEnd);
+                }
             }
         }
 

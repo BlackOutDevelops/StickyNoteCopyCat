@@ -46,6 +46,22 @@ namespace NoteTaker
             }
         }
 
+        public static void SaveImageToNewNote(NoteCardModel note)
+        {
+            using (IDbConnection conn = new SQLiteConnection(LoadConnectionString()))
+            {
+                conn.Execute("INSERT INTO NoteCards (ImagePaths, UpdatedTime) VALUES (@ImagePaths, @UpdatedTime)", note);
+            }
+        }
+
+        public static void SaveImageToCurrentNote(NoteCardModel note)
+        {
+            using (IDbConnection conn = new SQLiteConnection(LoadConnectionString()))
+            {
+                conn.Execute("UPDATE NoteCards SET ImagePaths = @ImagePaths, UpdatedTime = @UpdatedTime WHERE Id=@Id;", note);
+            }
+        }
+
         public static void DeleteNote(NoteCardModel note)
         {
             using (IDbConnection conn = new SQLiteConnection(LoadConnectionString()))

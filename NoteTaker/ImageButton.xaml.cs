@@ -25,11 +25,14 @@ namespace NoteTaker
     /// </summary>
     public partial class ImageButton : Button
     {
-        System.Drawing.Image ButtonImage;
-        public ImageButton(System.Drawing.Image buttonImage)
+        public MenuItem DeleteItem;
+        public string ImageLocation;
+        public readonly System.Drawing.Image ButtonImage;
+        public ImageButton(System.Drawing.Image buttonImage, string imageLocation)
         {
             Image imageControl = new Image();
             ButtonImage = buttonImage;
+            ImageLocation = imageLocation;
             InitializeComponent();
             Style = FindResource("ImageButtonStyle") as Style;
 
@@ -95,6 +98,7 @@ namespace NoteTaker
             };
             saveToDeviceItem.PreviewMouseLeftButtonUp += HandleSaveItemMouseLeftButtonUp;
             deleteImageItem.PreviewMouseLeftButtonUp += HandleDeleteItemMouseLeftButtonUp;
+            DeleteItem = deleteImageItem;
 
             ContextMenu = new ContextMenu();
             ContextMenu.Style = contextMenuStyle;
@@ -105,10 +109,16 @@ namespace NoteTaker
             ContextMenu.Items.Add(deleteImageItem);
         }
 
-        private void HandleDeleteItemMouseLeftButtonUp(object sender, RoutedEventArgs e)
+        public void HandleDeleteItemMouseLeftButtonUp(object sender, RoutedEventArgs e)
         {
             StackPanel imageStackPanel = Parent as StackPanel;
+
+            // Remove from StackPanel
             imageStackPanel.Children.Remove(this);
+
+            // Remove from "Media" directory
+            ButtonImage.Dispose();
+            File.Delete(ImageLocation);
         }
 
         private void HandleSaveItemMouseLeftButtonUp(object sender, RoutedEventArgs e)

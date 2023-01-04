@@ -25,7 +25,7 @@ namespace NoteTaker
     public partial class NoteCard : UserControl
     {
         public NoteCardViewModel vm = new NoteCardViewModel();
-
+        public ImageButton NoteCardImageButton;
         public NoteCard()
         {
             InitializeComponent();
@@ -73,6 +73,15 @@ namespace NoteTaker
             var contextMenu = sender as ContextMenu;
             Popup contextMenuParent = contextMenu.Parent as Popup;
             contextMenuParent.PopupAnimation = PopupAnimation.None;
+        }
+
+        private void HandleImageHolderLayoutUpdated(object sender, EventArgs e)
+        {
+            if (NoteCardImageCarousel.ImageStackPanel.Children.Count == 0)
+            {
+                ImageRow.Height = new GridLength(0);
+                NoteCardText.Padding = new Thickness(10, 22, 10, 20);
+            } 
         }
     }
 }

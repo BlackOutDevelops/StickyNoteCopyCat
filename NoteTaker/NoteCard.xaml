@@ -531,7 +531,7 @@
     </UserControl.Resources>
     <Grid>
         <Grid.ContextMenu>
-            <ContextMenu Style="{DynamicResource ContextMenuStyle}" x:Name="NoteSettingsMenu" IsVisibleChanged="HandleNoteSettingsVisibleChanged" FontSize="14">
+            <ContextMenu Style="{DynamicResource ContextMenuStyle}" x:Name="NoteSettingsMenu" IsVisibleChanged="HandleNoteSettingsVisibleChanged" FontSize="14" FontWeight="Normal">
                 <MenuItem Style="{DynamicResource MenuItemStyle}" Command="{Binding OpenOrCloseNoteCommand}" CommandParameter="{Binding ElementName=NoteCardUserControl}">
                     <MenuItem.Header>
                         <MultiBinding Converter="{StaticResource OpenOrCloseTextConverter}">
@@ -550,7 +550,30 @@
             </ContextMenu>
         </Grid.ContextMenu>
         <Border x:Name="NoteArea" Background="#FF303030" CornerRadius="2" MouseEnter="HandleMouseEntered" MouseLeave="HandleMouseLeft">
-            <TextBlock x:Name="NoteCardText" Padding="10, 22, 10, 20" Text="{Binding NoteString}" FontSize="14" MaxHeight="139" Foreground="WhiteSmoke" TextWrapping="Wrap" TextTrimming="WordEllipsis"/>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition x:Name="ImageRow" Height="0"/>
+                    <RowDefinition Height="6*"/>
+                </Grid.RowDefinitions>
+
+                <local:ImageHolder x:Name="NoteCardImageCarousel" Grid.Row="0" Margin="10, 22, 10, 0" LayoutUpdated="HandleImageHolderLayoutUpdated"/>
+                <RichTextBox x:Name="NoteCardText" Grid.Row="1" Padding="10, 22, 10, 20" FontSize="14" MaxHeight="139" Foreground="WhiteSmoke" Background="Transparent" IsEnabled="False" ContextMenu="{x:Null}" BorderThickness="0">
+                    <RichTextBox.Resources>
+                        <Style TargetType="{x:Type Paragraph}">
+                            <Setter Property="Margin" Value="0"/>
+                            <Setter Property="Padding" Value="0"/>
+                        </Style>
+                        <Style TargetType="{x:Type List}">
+                            <Setter Property="Padding" Value="15, 0, 0, 0"/>
+                            <Setter Property="Margin" Value="0"/>
+                        </Style>
+                        <Style TargetType="{x:Type ListItem}">
+                            <Setter Property="Padding" Value="0"/>
+                            <Setter Property="Margin" Value="0"/>
+                        </Style>
+                    </RichTextBox.Resources>
+                </RichTextBox>
+            </Grid>
         </Border>
         <Border Height="3" Background="#FF414141" VerticalAlignment="Top" CornerRadius="2, 2, 0, 0"/>
         <Canvas>
