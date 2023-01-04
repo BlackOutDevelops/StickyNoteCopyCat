@@ -283,7 +283,7 @@ namespace NoteTaker
 
                     // Reset card to original appearance
                     currentCard.NoteCardText.SelectAll();
-                    currentCard.NoteCardText.Selection.ApplyPropertyValue(TextElement.BackgroundProperty, new SolidColorBrush(Colors.Transparent));
+                    currentCard.NoteCardText.Selection.ApplyPropertyValue(TextElement.BackgroundProperty, default);
                     currentCard.NoteCardText.Selection.ApplyPropertyValue(TextElement.ForegroundProperty, new SolidColorBrush(Colors.WhiteSmoke));
 
                     int numberOfCharacters = currentCard.NoteCardText.Selection.Text.Length;
@@ -327,7 +327,7 @@ namespace NoteTaker
                     NoteCard currentCard = cardEnumerator.Current as NoteCard;
                     currentCard.Visibility = Visibility.Visible;
                     currentCard.NoteCardText.SelectAll();
-                    currentCard.NoteCardText.Selection.ApplyPropertyValue(TextElement.BackgroundProperty, new SolidColorBrush(Colors.Transparent));
+                    currentCard.NoteCardText.Selection.ApplyPropertyValue(TextElement.BackgroundProperty, default);
                     currentCard.NoteCardText.Selection.ApplyPropertyValue(TextElement.ForegroundProperty, new SolidColorBrush(Colors.WhiteSmoke));
                     currentCard.NoteCardText.Selection.Select(currentCard.NoteCardText.Document.ContentEnd, currentCard.NoteCardText.Document.ContentEnd);
                 }
