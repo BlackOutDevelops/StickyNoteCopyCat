@@ -88,7 +88,6 @@ namespace NoteTaker
                         imageButton.IsEnabled = false;
                         note.NoteCardImageCarousel.ImageStackPanel.Children.Add(imageButton);
                         note.NoteCardImageButton = imageButton;
-                        image.Dispose();
                     }
                     note.ImageRow.Height = new GridLength(100);
                 }

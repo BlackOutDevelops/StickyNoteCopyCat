@@ -261,10 +261,11 @@ namespace NoteTaker.ViewModels
 
             // Remove all images associated with NoteCard
             string[] imagePaths = noteCard.vm.ImagePaths.ToString().Split(new string[] { "[", "][", "]" }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (ImageButton imageButton in noteCard.NoteCardImageCarousel.ImageStackPanel.Children)
+                imageButton.ButtonImage.Dispose();
+
             foreach (string imagePath in imagePaths) 
-            { 
                 File.Delete(imagePath);
-            }
 
             // Remove reference of NoteCard
             ((MainWindow)Application.Current.MainWindow).mwvm.NoteCards.Remove(noteCard);

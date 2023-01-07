@@ -322,7 +322,6 @@ namespace NoteTaker
                 noteWindowImageButton.DeleteItem.PreviewMouseLeftButtonUp += HandleDeleteImageButton;
                 Note.NoteCardImageCarousel.ImageStackPanel.Children.Add(noteCardImageButton);
                 ImageCarousel.ImageStackPanel.Children.Add(noteWindowImageButton);
-                image.Dispose();
                 fileNumber++;
 
                 
