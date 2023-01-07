@@ -189,6 +189,7 @@ namespace NoteTaker
             TextRange noteCardTextBoxRange = new TextRange(Note.NoteCardText.Document.ContentStart, Note.NoteCardText.Document.ContentEnd);
 
             // Handle Text Loading
+            noteTextBox.TextChanged -= HandleTextChanged;
             if (IsModified)
             {
                 using (MemoryStream ms = new MemoryStream())
@@ -197,6 +198,7 @@ namespace NoteTaker
                     noteWindowTextBoxRange.Load(ms, DataFormats.Rtf);
                 }
             }
+            noteTextBox.TextChanged += HandleTextChanged;
             
             // Handle Image Loading
             if (Note.NoteCardImageCarousel.ImageStackPanel.Children.Count > 0)
