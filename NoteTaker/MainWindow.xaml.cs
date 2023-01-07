@@ -294,13 +294,14 @@ namespace NoteTaker
                         currentCard.Visibility = Visibility.Visible;
 
                         TextPointer pointer = currentCard.NoteCardText.Document.ContentStart;
-                        Regex searchBoxText = new Regex(searchBox.Text, RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace);
+                        string searchBoxText = Regex.Escape(searchBox.Text);
+                        Regex regEx = new Regex(searchBoxText, RegexOptions.IgnoreCase);
                         while (pointer != null)
                         {
                             if (pointer.GetPointerContext(LogicalDirection.Forward) == TextPointerContext.Text)
                             {
                                 string run = pointer.GetTextInRun(LogicalDirection.Forward);
-                                var matches = searchBoxText.Matches(run);
+                                var matches = regEx.Matches(run);
 
                                 foreach (Match match in matches)
                                 {
