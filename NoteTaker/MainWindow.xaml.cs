@@ -67,13 +67,16 @@ namespace NoteTaker
                 note.vm.ImagePaths.Append(noteCard.ImagePaths);
 
                 // Handle RTF formatting
-                TextRange tr = new TextRange(note.NoteCardText.Document.ContentStart, note.NoteCardText.Document.ContentEnd);
-                byte[] rtfByteArray = Encoding.ASCII.GetBytes(noteCard.Note);
-                using (MemoryStream ms = new MemoryStream(rtfByteArray))
+                if (noteCard.Note != null)
                 {
-                    tr.Load(ms, DataFormats.Rtf);
+                    TextRange tr = new TextRange(note.NoteCardText.Document.ContentStart, note.NoteCardText.Document.ContentEnd);
+                    byte[] rtfByteArray = Encoding.ASCII.GetBytes(noteCard.Note);
+                    using (MemoryStream ms = new MemoryStream(rtfByteArray))
+                    {
+                        tr.Load(ms, DataFormats.Rtf);
+                    }
                 }
-
+                
                 // Handle Images
                 if (noteCard.ImagePaths != null)
                 {
@@ -85,6 +88,7 @@ namespace NoteTaker
                         imageButton.IsEnabled = false;
                         note.NoteCardImageCarousel.ImageStackPanel.Children.Add(imageButton);
                         note.NoteCardImageButton = imageButton;
+                        image.Dispose();
                     }
                     note.ImageRow.Height = new GridLength(100);
                 }

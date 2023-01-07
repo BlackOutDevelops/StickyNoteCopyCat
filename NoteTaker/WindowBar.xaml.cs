@@ -106,7 +106,9 @@ namespace NoteTaker
                         ((MainWindow)App.Current.MainWindow).mwvm.NoteCards.Remove((CurrentWindow as NoteWindow).Note);
 
                 CurrentWindow.Close();
+                ((MainWindow)App.Current.MainWindow).ListOfNoteWindows.Remove((CurrentWindow as NoteWindow).Note.vm.Id);
             }
+            
         }
 
         private void HandleMaximizeButtonClick(object sender, RoutedEventArgs e)
@@ -130,6 +132,7 @@ namespace NoteTaker
             NoteCard noteCard = new NoteCard();
             NoteWindow newNote = new NoteWindow(noteCard, false, false);
             newNote.Show();
+            noteCard.vm.Id = SQLiteDatabaseAccess.LoadRecentNoteDatabaseID();
             ((MainWindow)App.Current.MainWindow).ListOfNoteWindows.Add(newNote.Note.vm.Id ,newNote);
             newNote.WindowStartupLocation = WindowStartupLocation.Manual;
             newNote.Left = CurrentWindow.Left + CurrentWindow.Width;

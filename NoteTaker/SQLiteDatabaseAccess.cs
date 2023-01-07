@@ -26,7 +26,7 @@ namespace NoteTaker
             using (IDbConnection conn = new SQLiteConnection(LoadConnectionString()))
             {
                 var output = conn.QuerySingle("SELECT seq FROM sqlite_sequence", new DynamicParameters());
-                return (int)output.seq;
+                return (int)output.seq + 1;
             }
         }
 

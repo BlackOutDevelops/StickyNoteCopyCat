@@ -162,20 +162,18 @@ namespace NoteTaker
                     NoteCardM.Note = Encoding.ASCII.GetString(ms.ToArray());
                 }
 
-                //NoteCardM.Note = NoteCardVM.NoteString;
                 NoteCardM.UpdatedTime = NoteCardVM.UpdatedTime.ToString();
+                NoteCardM.Id = NoteCardVM.Id;
 
-                if (!IsInDatabase)
-                {
-                    SQLiteDatabaseAccess.SaveNewNote(NoteCardM);
-                    NoteCardVM.Id = NoteCardM.Id = SQLiteDatabaseAccess.LoadRecentNoteDatabaseID();
-                    IsInDatabase = true;
-                }
+                // Save to database
+                if (IsInDatabase)
+                    SQLiteDatabaseAccess.SaveCurrentNote(NoteCardM);
                 else
                 {
-                    NoteCardM.Id = NoteCardVM.Id;
-                    SQLiteDatabaseAccess.SaveCurrentNote(NoteCardM);
+                    SQLiteDatabaseAccess.SaveNewNote(NoteCardM);
+                    IsInDatabase= true;
                 }
+                Debug.WriteLine(NoteCardM.Id);
             }
         }
 
@@ -191,12 +189,15 @@ namespace NoteTaker
             TextRange noteCardTextBoxRange = new TextRange(Note.NoteCardText.Document.ContentStart, Note.NoteCardText.Document.ContentEnd);
 
             // Handle Text Loading
-            using (MemoryStream ms = new MemoryStream())
+            if (IsModified)
             {
-                noteCardTextBoxRange.Save(ms, DataFormats.Rtf);
-                noteWindowTextBoxRange.Load(ms, DataFormats.Rtf);
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    noteCardTextBoxRange.Save(ms, DataFormats.Rtf);
+                    noteWindowTextBoxRange.Load(ms, DataFormats.Rtf);
+                }
             }
-
+            
             // Handle Image Loading
             if (Note.NoteCardImageCarousel.ImageStackPanel.Children.Count > 0)
             {
@@ -321,6 +322,7 @@ namespace NoteTaker
                 noteWindowImageButton.DeleteItem.PreviewMouseLeftButtonUp += HandleDeleteImageButton;
                 Note.NoteCardImageCarousel.ImageStackPanel.Children.Add(noteCardImageButton);
                 ImageCarousel.ImageStackPanel.Children.Add(noteWindowImageButton);
+                image.Dispose();
                 fileNumber++;
 
                 
@@ -329,18 +331,17 @@ namespace NoteTaker
                 NoteCardVM.UpdatedTime = DateTime.Now;
                 ((MainWindow)App.Current.MainWindow).OrderNoteCards();
                 NoteCardM.UpdatedTime = NoteCardVM.UpdatedTime.ToString();
-                if (!IsInDatabase)
-                {
-                    SQLiteDatabaseAccess.SaveImageToNewNote(NoteCardM);
-                    NoteCardVM.Id = NoteCardM.Id = SQLiteDatabaseAccess.LoadRecentNoteDatabaseID();
-                    NoteCardM.ImagePaths = NoteCardVM.ImagePaths.ToString();
-                    IsInDatabase = true;
-                }
+                NoteCardM.Id = NoteCardVM.Id;
+                NoteCardM.ImagePaths = NoteCardVM.ImagePaths.ToString();
+                IsModified = true;
+
+                // Save to database
+                if (IsInDatabase)
+                    SQLiteDatabaseAccess.SaveImageToCurrentNote(NoteCardM);
                 else
                 {
-                    NoteCardM.Id = NoteCardVM.Id;
-                    NoteCardM.ImagePaths = NoteCardVM.ImagePaths.ToString();
-                    SQLiteDatabaseAccess.SaveImageToCurrentNote(NoteCardM);
+                    SQLiteDatabaseAccess.SaveImageToNewNote(NoteCardM);
+                    IsInDatabase = true;
                 }
             }
 
