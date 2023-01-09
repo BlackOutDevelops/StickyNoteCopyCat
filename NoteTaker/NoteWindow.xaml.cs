@@ -25,6 +25,7 @@ using Microsoft.Win32;
 using static System.Net.Mime.MediaTypeNames;
 using System.Drawing.Imaging;
 using System.Threading;
+using NoteTaker.Controls;
 
 namespace NoteTaker
 {

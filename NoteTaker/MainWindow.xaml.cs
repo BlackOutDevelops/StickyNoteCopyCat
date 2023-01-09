@@ -1,4 +1,5 @@
-﻿using NoteTaker.ViewModels;
+﻿using NoteTaker.Controls;
+using NoteTaker.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:NoteTaker"
+        xmlns:controls="clr-namespace:NoteTaker.Controls"
         mc:Ignorable="d"
         x:Name="NotesWindow" Title="Note Taker" MinHeight="350" MinWidth="355" Height="350" Width="355" WindowStyle="None" AllowsTransparency="True" Background="Transparent" ResizeMode="CanResize" WindowStartupLocation="CenterScreen" 
         Activated="HandleWindowActivated" Deactivated="HandleWindowDeactivated" StateChanged="HandleWindowStateChanged">
@@ -400,10 +400,10 @@
             </Grid.RowDefinitions>
 
             <!-- Window Thumbs -->
-            <local:WindowThumbs Grid.RowSpan="3"/>
+            <controls:WindowThumbs Grid.RowSpan="3"/>
 
             <!-- Window Bar -->
-            <local:WindowBar Grid.Row="0"/>
+            <controls:WindowBar Grid.Row="0"/>
 
             <!-- Contents -->
             <Grid Grid.Row="1">
@@ -412,7 +412,7 @@
                     <RowDefinition Height="6*"/>
                 </Grid.RowDefinitions>
                 
-                <local:ImageHolder x:Name="ImageCarousel" Grid.Row="0" Foreground="White" Background="#FF303030" LayoutUpdated="HandleImageHolderLayoutUpdated"/>
+                <controls:ImageHolder x:Name="ImageCarousel" Grid.Row="0" Foreground="White" Background="#FF303030" LayoutUpdated="HandleImageHolderLayoutUpdated"/>
                 <RichTextBox Grid.Row="1" x:Name="NoteTextBox" AutoWordSelection="False" IsUndoEnabled="True" Foreground="White" Background="#FF303030" BorderThickness="0" VerticalScrollBarVisibility="Visible" FontSize="14" TextChanged="HandleTextChanged" PreviewTextInput="HandleTextInput" PreviewKeyDown="HandleKeyDown" Loaded="HandleTextBoxLoaded" SelectionChanged="HandleSelectionChanged" >
                     <RichTextBox.Resources>
                         <Style TargetType="{x:Type ScrollViewer}" BasedOn="{StaticResource ScrollViewerStyle}">

@@ -1,9 +1,9 @@
-﻿<UserControl x:Class="NoteTaker.NoteCard"
+﻿<UserControl x:Class="NoteTaker.Controls.NoteCard"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:NoteTaker"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:controls="clr-namespace:NoteTaker.Controls"
              xmlns:converters="clr-namespace:NoteTaker.Converters"
              mc:Ignorable="d" 
              d:MinHeight="70" d:Width="800" x:Name="NoteCardUserControl">
@@ -556,7 +556,7 @@
                     <RowDefinition Height="6*"/>
                 </Grid.RowDefinitions>
 
-                <local:ImageHolder x:Name="NoteCardImageCarousel" Grid.Row="0" Margin="10, 22, 10, 0" LayoutUpdated="HandleImageHolderLayoutUpdated"/>
+                <controls:ImageHolder x:Name="NoteCardImageCarousel" Grid.Row="0" Margin="10, 22, 10, 0" LayoutUpdated="HandleImageHolderLayoutUpdated"/>
                 <RichTextBox x:Name="NoteCardText" Grid.Row="1" Padding="10, 22, 10, 20" FontSize="14" MaxHeight="139" Foreground="WhiteSmoke" Background="Transparent" IsEnabled="False" ContextMenu="{x:Null}" BorderThickness="0">
                     <RichTextBox.Resources>
                         <Style TargetType="{x:Type Paragraph}">

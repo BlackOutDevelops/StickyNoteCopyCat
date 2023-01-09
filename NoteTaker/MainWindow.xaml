@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:NoteTaker"
+        xmlns:controls="clr-namespace:NoteTaker.Controls"
         mc:Ignorable="d"
         x:Name="NoteTakerWindow" Title="Note Taker" MinHeight="535" MinWidth="355" Height="535" Width="355" WindowStyle="None" AllowsTransparency="True" Background="Transparent" ResizeMode="CanResize" WindowStartupLocation="CenterScreen" 
         Activated="HandleWindowActivated" Deactivated="HandleWindowDeactivated" StateChanged="HandleWindowStateChanged">
@@ -446,10 +446,10 @@
             </Grid.RowDefinitions>
 
             <!-- Window Thumbs -->
-            <local:WindowThumbs Grid.RowSpan="2"/>
+            <controls:WindowThumbs Grid.RowSpan="2"/>
 
             <!-- Window Bar -->
-            <local:WindowBar Grid.Row="0"/>
+            <controls:WindowBar Grid.Row="0"/>
 
             <!-- Contents -->
             <ScrollViewer x:Name="ContentScrollViewer" Style="{DynamicResource ScrollViewerStyle}" Grid.Row="2" Margin="{Binding ScrollViewerMargin}">
