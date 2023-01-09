@@ -85,31 +85,31 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Command.cs" />
+    <Compile Include="Helpers\Command.cs" />
     <Compile Include="Converters\OpenOrCloseIconConverter.cs" />
     <Compile Include="Converters\OpenOrCloseTextConverter.cs" />
     <Compile Include="Converters\RectConverter.cs" />
-    <Compile Include="ImageButton.xaml.cs">
+    <Compile Include="Controls\ImageButton.xaml.cs">
       <DependentUpon>ImageButton.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ImageHolder.xaml.cs">
+    <Compile Include="Controls\ImageHolder.xaml.cs">
       <DependentUpon>ImageHolder.xaml</DependentUpon>
     </Compile>
     <Compile Include="NoteCardModel.cs" />
-    <Compile Include="SQLiteDatabaseAccess.cs" />
+    <Compile Include="Helpers\SQLiteDatabaseAccess.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\NoteCardViewModel.cs" />
-    <Compile Include="WindowBar.xaml.cs">
+    <Compile Include="Controls\WindowBar.xaml.cs">
       <DependentUpon>WindowBar.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WindowThumbs.xaml.cs">
+    <Compile Include="Controls\WindowThumbs.xaml.cs">
       <DependentUpon>WindowThumbs.xaml</DependentUpon>
     </Compile>
-    <Page Include="ImageButton.xaml">
+    <Page Include="Controls\ImageButton.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ImageHolder.xaml">
+    <Page Include="Controls\ImageHolder.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -125,7 +125,7 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="NoteCard.xaml">
+    <Page Include="Controls\NoteCard.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -133,17 +133,17 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="WindowBar.xaml">
+    <Page Include="Controls\WindowBar.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="WindowThumbs.xaml">
+    <Page Include="Controls\WindowThumbs.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="NoteCard.xaml.cs">
+    <Compile Include="Controls\NoteCard.xaml.cs">
       <DependentUpon>NoteCard.xaml</DependentUpon>
     </Compile>
     <Compile Include="NoteWindow.xaml.cs">
