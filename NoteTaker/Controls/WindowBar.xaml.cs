@@ -32,6 +32,10 @@ namespace NoteTaker.Controls
             {
                 AddButton.Padding = new Thickness(-7);
                 AddButton.Width = 40;
+                BackButton.Padding = new Thickness(-7);
+                BackButton.Width = 40;
+                SettingsButton.Width = 40;
+                SettingsButton.Padding = new Thickness(8);
                 MaximizeButton.Padding = new Thickness(-9);
                 MaximizeButton.Width = 40;
                 CloseButton.Padding = new Thickness(-7);
@@ -41,6 +45,7 @@ namespace NoteTaker.Controls
             {
                 AddButton.Padding = new Thickness(-11);
                 AddButton.Width = 30;
+                SettingsButton.Visibility = Visibility.Collapsed;
                 MaximizeButton.Padding = new Thickness(-13);
                 MaximizeButton.Width = 30;
                 CloseButton.Padding = new Thickness(-11);
@@ -63,6 +68,7 @@ namespace NoteTaker.Controls
             {
                 AddButton.Padding = new Thickness(-11);
                 AddButton.Width = 30;
+                SettingsButton.Visibility = Visibility.Collapsed;
                 MaximizeButton.Padding = new Thickness(0);
                 MaximizeButton.Width = 30;
                 CloseButton.Padding = new Thickness(-11);
@@ -74,6 +80,7 @@ namespace NoteTaker.Controls
         {
             var closeButtonBorder = CloseButton.Template.FindName("ButtonBorder", CloseButton) as Border;
             var addButtonBorder = AddButton.Template.FindName("ButtonBorder", AddButton) as Border;
+            var backButtonBorder = BackButton.Template.FindName("ButtonBorder", BackButton) as Border;
 
             if (CurrentWindow.WindowState == WindowState.Maximized)
             {
@@ -82,6 +89,8 @@ namespace NoteTaker.Controls
                 {
                     closeButtonBorder.CornerRadius = new CornerRadius(0);
                     addButtonBorder.CornerRadius = new CornerRadius(0);
+                    if (backButtonBorder != null)
+                        backButtonBorder.CornerRadius = new CornerRadius(0);
                 }
             }
             else if (CurrentWindow.WindowState == WindowState.Normal)
@@ -91,6 +100,8 @@ namespace NoteTaker.Controls
                 {
                     closeButtonBorder.CornerRadius = new CornerRadius(0, 7, 0, 0);
                     addButtonBorder.CornerRadius = new CornerRadius(7, 0, 0, 0);
+                    if (backButtonBorder != null)
+                        backButtonBorder.CornerRadius = new CornerRadius(7, 0, 0, 0);
                 }
             }
         }
@@ -109,6 +120,32 @@ namespace NoteTaker.Controls
                 ((MainWindow)App.Current.MainWindow).ListOfNoteWindows.Remove((CurrentWindow as NoteWindow).Note.vm.Id);
             }
             
+        }
+
+        private void HandleBackButtonClick(object sender, RoutedEventArgs e)
+        {
+            if (CurrentWindow is MainWindow)
+            {
+                SettingsButton.Visibility = Visibility.Visible;
+                AddButton.Visibility = Visibility.Visible;
+                SettingsLabel.Visibility = Visibility.Collapsed;
+                BackButton.Visibility = Visibility.Collapsed;
+                (CurrentWindow as MainWindow).Settings.Visibility = Visibility.Collapsed;
+                (CurrentWindow as MainWindow).ContentScrollViewer.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void HandleSettingsButtonClick(object sender, RoutedEventArgs e)
+        {
+            if (CurrentWindow is MainWindow)
+            {
+                SettingsButton.Visibility = Visibility.Collapsed;
+                AddButton.Visibility = Visibility.Collapsed;
+                SettingsLabel.Visibility = Visibility.Visible;
+                BackButton.Visibility = Visibility.Visible;
+                (CurrentWindow as MainWindow).Settings.Visibility = Visibility.Visible;
+                (CurrentWindow as MainWindow).ContentScrollViewer.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void HandleMaximizeButtonClick(object sender, RoutedEventArgs e)

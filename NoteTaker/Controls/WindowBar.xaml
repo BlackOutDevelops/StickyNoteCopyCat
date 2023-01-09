@@ -93,12 +93,103 @@
     <Grid>
         <Border MouseDown="HandleMouseDownRow" Background="{StaticResource ThemeColor}" CornerRadius="7, 7, 0, 0"/>
         <DockPanel>
+            <Button x:Name="BackButton" Template="{DynamicResource AddButtonTemplate}" BorderThickness="0" Background="{StaticResource ThemeColor}" FontSize="33" 
+                    VerticalContentAlignment="Center" Foreground="{StaticResource MainFontColor}" FontWeight="UltraLight" Click="HandleBackButtonClick" DockPanel.Dock="Left"
+                    Visibility="Collapsed">
+                <Path Stroke="{StaticResource MainFontColor}" StrokeThickness="1" Width="30" Height="30">
+                    <Path.Data>
+                        <PathGeometry Figures="M18,15 0,15 M8,8 0,15 8,22">
+                            <PathGeometry.Transform>
+                                <TranslateTransform X="6"/>
+                            </PathGeometry.Transform>
+                        </PathGeometry>
+                    </Path.Data>
+                </Path>
+            </Button>
+            <Label x:Name="SettingsLabel" Content="Settings" Foreground="{StaticResource MainFontColor}" FontSize="16" HorizontalAlignment="Left" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                   Visibility="Collapsed"/>
             <Button x:Name="AddButton" Template="{DynamicResource AddButtonTemplate}" Content="+" BorderThickness="0" Background="{StaticResource ThemeColor}" FontSize="33" 
                     VerticalContentAlignment="Top" Foreground="{StaticResource MainFontColor}" FontWeight="UltraLight" Click="HandleAddButtonClick" DockPanel.Dock="Left"/>
             <Button x:Name="CloseButton" Template="{DynamicResource CloseButtonTemplate}" Content="×" BorderThickness="0" Background="{StaticResource ThemeColor}" FontSize="33"  
                     VerticalContentAlignment="Top" Foreground="{StaticResource MainFontColor}" FontWeight="UltraLight" Click="HandleCloseButtonClick" DockPanel.Dock="Right"/>
             <Button x:Name="MaximizeButton" Template="{DynamicResource MaximizeButtonTemplate}" Content="□" BorderThickness="0" Background="{StaticResource ThemeColor}" FontSize="33" 
                     HorizontalAlignment="Right" VerticalContentAlignment="Top" Foreground="{StaticResource MainFontColor}" FontWeight="UltraLight" Click="HandleMaximizeButtonClick" DockPanel.Dock="Right"/>
+            <Button x:Name="SettingsButton" Template="{DynamicResource MaximizeButtonTemplate}" BorderThickness="0" Background="{StaticResource ThemeColor}" HorizontalAlignment="Right"
+                    VerticalContentAlignment="Center" Foreground="{StaticResource MainFontColor}" Click="HandleSettingsButtonClick" DockPanel.Dock="Right">
+                <Button.Content>
+                    <Path Stroke="{StaticResource MainFontColor}" StrokeThickness="1" Width="30" Height="30">
+                        <Path.Data>
+                            <GeometryGroup>
+                                <EllipseGeometry RadiusX="3" RadiusY="3" Center="12.5,12.5"/>
+                                <!-- Gear Edges -->
+                                <PathGeometry  Figures="M0,0 S1,-1.5 1,-3 L4,-3 S4,-1.5 5,0">
+                                    <PathGeometry.Transform>
+                                        <TransformGroup>
+                                            <TranslateTransform X="10.5" Y="7"/>
+                                        </TransformGroup>
+                                    </PathGeometry.Transform>
+                                </PathGeometry>
+                                <PathGeometry  Figures="M0,0 S1,-1.5 1,-3 L4,-3 S4,-1.5 5,0">
+                                    <PathGeometry.Transform>
+                                        <TransformGroup>
+                                            <RotateTransform Angle="45"/>
+                                            <TranslateTransform X="15" Y="6.8"/>
+                                        </TransformGroup>
+                                    </PathGeometry.Transform>
+                                </PathGeometry>
+                                <PathGeometry  Figures="M0,0 S1,-1.5 1,-3 L4,-3 S4,-1.5 5,0">
+                                    <PathGeometry.Transform>
+                                        <TransformGroup>
+                                            <RotateTransform Angle="90"/>
+                                            <TranslateTransform X="18" Y="9.9"/>
+                                        </TransformGroup>
+                                    </PathGeometry.Transform>
+                                </PathGeometry>
+                                <PathGeometry  Figures="M0,0 S1,-1.5 1,-3 L4,-3 S4,-1.5 5,0">
+                                    <PathGeometry.Transform>
+                                        <TransformGroup>
+                                            <RotateTransform Angle="135"/>
+                                            <TranslateTransform X="18" Y="14.5"/>
+                                        </TransformGroup>
+                                    </PathGeometry.Transform>
+                                </PathGeometry>
+                                <PathGeometry  Figures="M0,0 S1,-1.5 1,-3 L4,-3 S4,-1.5 5,0">
+                                    <PathGeometry.Transform>
+                                        <TransformGroup>
+                                            <RotateTransform Angle="180"/>
+                                            <TranslateTransform X="15" Y="17.9"/>
+                                        </TransformGroup>
+                                    </PathGeometry.Transform>
+                                </PathGeometry>
+                                <PathGeometry  Figures="M0,0 S1,-1.5 1,-3 L4,-3 S4,-1.5 5,0">
+                                    <PathGeometry.Transform>
+                                        <TransformGroup>
+                                            <RotateTransform Angle="225"/>
+                                            <TranslateTransform X="10.5" Y="18"/>
+                                        </TransformGroup>
+                                    </PathGeometry.Transform>
+                                </PathGeometry>
+                                <PathGeometry  Figures="M0,0 S1,-1.5 1,-3 L4,-3 S4,-1.5 5,0">
+                                    <PathGeometry.Transform>
+                                        <TransformGroup>
+                                            <RotateTransform Angle="270"/>
+                                            <TranslateTransform X="7" Y="15"/>
+                                        </TransformGroup>
+                                    </PathGeometry.Transform>
+                                </PathGeometry>
+                                <PathGeometry  Figures="M0,0 S1,-1.5 1,-3 L4,-3 S4,-1.5 5,0">
+                                    <PathGeometry.Transform>
+                                        <TransformGroup>
+                                            <RotateTransform Angle="315"/>
+                                            <TranslateTransform X="7.3" Y="10.5"/>
+                                        </TransformGroup>
+                                    </PathGeometry.Transform>
+                                </PathGeometry>
+                            </GeometryGroup>
+                        </Path.Data>
+                    </Path>
+                </Button.Content>
+            </Button>
         </DockPanel>
     </Grid>
 </UserControl>

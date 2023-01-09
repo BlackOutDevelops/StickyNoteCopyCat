@@ -450,6 +450,9 @@
 
             <!-- Window Bar -->
             <controls:WindowBar Grid.Row="0"/>
+            
+            <!-- Settings -->
+            <controls:SettingsPanel x:Name="Settings" Grid.Row="1" Visibility="Collapsed"/>
 
             <!-- Contents -->
             <ScrollViewer x:Name="ContentScrollViewer" Style="{DynamicResource ScrollViewerStyle}" Grid.Row="2" Margin="{Binding ScrollViewerMargin}">
