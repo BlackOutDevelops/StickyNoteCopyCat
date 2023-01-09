@@ -205,11 +205,6 @@ namespace NoteTaker.ViewModels
             OpenOrCloseNoteCommand = new Command(OpenOrCloseNoteCommandExecute, OpenOrCloseNoteCommandCanExecute);
         }
 
-        private bool ToggleBulletsCanExecute()
-        {
-            return true;
-        }
-
         private bool OpenOrCloseNoteCommandCanExecute(object parameter)
         {
             return true;
