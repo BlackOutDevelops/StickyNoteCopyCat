@@ -138,12 +138,12 @@ namespace NoteTaker
             TextRange noteCardTextBoxRange = new TextRange(Note.NoteCardText.Document.ContentStart, Note.NoteCardText.Document.ContentEnd);
 
             //Work On
-            if (noteWindowTextBoxRange.Equals("Take a note...") && !IsModified)
+            if (noteWindowTextBoxRange.Text.Equals("Take a note...") && !IsModified)
             {
                 noteTextBox.Foreground = Brushes.Gray;
             }
 
-            if (noteCardTextBoxRange.Text != noteWindowTextBoxRange.Text)
+            if (noteCardTextBoxRange.Text != noteWindowTextBoxRange.Text || noteCardTextBoxRange.GetPropertyValue(Inline.TextDecorationsProperty) != noteWindowTextBoxRange.GetPropertyValue(Inline.TextDecorationsProperty))
             {
                 // Update UI
                 using (MemoryStream ms = new MemoryStream())
@@ -281,6 +281,11 @@ namespace NoteTaker
             {
                 toggleButton.Visibility = System.Windows.Visibility.Collapsed;
             }
+        }
+
+        private void HandleTextDecorationChanges(object sender, RoutedEventArgs e)
+        {
+            HandleTextChanged(NoteTextBox, new TextChangedEventArgs(e.RoutedEvent, UndoAction.None));
         }
 
         private void HandleInsertImageButtonClick(object sender, RoutedEventArgs e)
